@@ -9,37 +9,6 @@ on:
       - '*'
 
 jobs:
-  build-csharp:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Check .NET SDK
-        run: dotnet --list-sdks
-
-      - name: Restore dependencies
-        run: dotnet restore ./client/client.csproj
-
-      - name: Build project
-        run: dotnet build --configuration Debug ./client/Form1.cs
-
-
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt
-
-      - name: Publish test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Test-Results
-          path: test_results.txt
-
-      - name: Publish C# binary
-        uses: actions/upload-artifact@v3
-        with:
-          name: CSharp-Binary
-          path: ./client/bin/Release/
-
   build-arduino:
     runs-on: ubuntu-latest
     steps:
@@ -67,12 +36,11 @@ jobs:
 
   post:
     runs-on: ubuntu-latest
-    needs: [build-csharp, build-arduino]
+    needs: [build-arduino]
     steps:
       - name: Create combined artifacts
         run: |
           mkdir -p ci/artifacts
-          cp -r ./client/bin/Release/* ci/artifacts/
           cp -r ./server/build/* ci/artifacts/
 
       - name: Upload combined binaries
