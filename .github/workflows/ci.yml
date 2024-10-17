@@ -22,7 +22,7 @@ jobs:
         run: dotnet restore ./client/client.csproj
 
       - name: Build project
-        run: dotnet build --configuration Debug ./client/client.sln
+        run: dotnet build --configuration Debug ./client/Form1.cs
 
 
       - name: Run tests
