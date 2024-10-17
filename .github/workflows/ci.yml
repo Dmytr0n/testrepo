@@ -28,6 +28,12 @@ jobs:
     - name: Build the project
       run: msbuild client/client.sln /p:Configuration=Release /p:OutputPath=ci/bin
 
+    - name: Create test results directories
+      run: |
+        mkdir ci/test-results/unit
+        mkdir ci/test-results/integration
+        mkdir ci/test-results/functional
+
     - name: Run Unit Tests
       run: |
         dotnet test client/UnitTests/UnitTests.csproj > ci/test-results/unit/unit_test_results.txt
@@ -41,7 +47,7 @@ jobs:
         dotnet test client/FunctionalTests/FunctionalTests.csproj > ci/test-results/functional/functional_test_results.txt
 
     - name: Create artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Build and Test Artifacts
         path: |
