@@ -25,11 +25,6 @@ jobs:
       run: |
         Invoke-WebRequest -Uri "https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer" -OutFile "ndp472-devpack-enu.exe"
       shell: pwsh
-
-    - name: Install .NET Framework 4.7.2 Developer Pack
-      run: |
-        Start-Process -FilePath "ndp472-devpack-enu.exe" -ArgumentList "/q" -Wait
-      shell: pwsh
       
     # Вкажіть шлях до файлу .sln або .csproj, якщо проект не в корені репозиторію
     - name: Restore dependencies
