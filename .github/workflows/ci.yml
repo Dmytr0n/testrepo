@@ -27,7 +27,7 @@ jobs:
 
 
     - name: Build the project
-      run: msbuild client.sln /p:Configuration=Release
+      run: msbuild client/client.sln /p:Configuration=Release
 
     - name: Run tests
       run: |
