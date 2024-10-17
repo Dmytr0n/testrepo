@@ -26,7 +26,7 @@ jobs:
         run: arduino-cli core install arduino:avr
 
       - name: Compile Arduino project
-        run: arduino-cli compile --fqbn arduino:avr:uno ./server/server.ino
+        run: arduino-cli compile --fqbn arduino:avr:uno ./server/server.ino --output-dir ./server/build/
 
       - name: Upload Arduino binary
         uses: actions/upload-artifact@v3
