@@ -16,13 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3  # Завантажуємо код репозиторію
   
-      - name: Install Chocolatey
+      - name: Download .NET Framework 4.7.2 Developer Pack from custom URL
         run: |
-             Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+            curl -L -o ndp472-devpack-enu.exe "https://drive.google.com/file/d/1q69MGdDMJph6bUn1gR6A6nVn3VQyUAOY/view?usp=sharing/NetFraemwork/ndp472-devpack-enu.exe"
         shell: pwsh
 
       - name: Install .NET Framework 4.7.2 Developer Pack
-        run: choco install dotnetfx472
+        run: |
+            Start-Process -FilePath "ndp472-devpack-enu.exe" -ArgumentList "/q" -Wait
         shell: pwsh
 
       - name: Restore dependencies
