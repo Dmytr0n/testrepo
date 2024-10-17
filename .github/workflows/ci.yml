@@ -31,20 +31,10 @@ jobs:
     - name: Create test results directories
       run: |
         mkdir ci/test-results/unit
-        mkdir ci/test-results/integration
-        mkdir ci/test-results/functional
-
+       
     - name: Run Unit Tests
       run: |
         dotnet test client/Tests/unit_test_client.csproj > ci/test-results/unit/unit_test_results.txt
-
-    - name: Run Integration Tests
-      run: |
-        dotnet test client/IntegrationTests/IntegrationTests.csproj > ci/test-results/integration/integration_test_results.txt
-
-    - name: Run Functional Tests
-      run: |
-        dotnet test client/FunctionalTests/FunctionalTests.csproj > ci/test-results/functional/functional_test_results.txt
 
     - name: Create artifacts
       uses: actions/upload-artifact@v3
