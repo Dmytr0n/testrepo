@@ -32,4 +32,4 @@ jobs:
     - name: Run tests
       run: |
         # Add your test command here
-        dotnet test client.csproj
+        dotnet test client/client.csproj
