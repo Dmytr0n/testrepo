@@ -9,6 +9,52 @@ on:
       - '*'
 
 jobs:
+  build:
+    runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для виконання дій
+
+    steps:
+    # 1. Крок: Клонуємо репозиторій
+    - name: Checkout repository
+      uses: actions/checkout@v3  # Використовуємо офіційний екшн для завантаження коду репозиторію
+
+    # 2. Крок: Встановлюємо .NET середовище
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3  # Налаштовуємо потрібну версію .NET SDK
+      with:
+        dotnet-version: '7.x'  # Використовуємо потрібну версію .NET (змініть на вашу версію, якщо потрібно)
+
+    # 3. Крок: Відновлюємо всі залежності
+    - name: Restore dependencies
+      run: dotnet restore  # Відновлюємо пакети залежностей проекту
+
+    # 4. Крок: Збираємо проект у Release конфігурації
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore  # Виконуємо збірку проекту без відновлення
+
+    # 5. Крок: Запускаємо тести з генерацією детальних звітів
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./test-results
+      # Виконуємо тести. Тестові звіти зберігаються у форматі .trx в папці test-results
+
+    # 6. Крок: Завантажуємо результати тестів як артефакт
+    - name: Upload Test Results
+      if: always()  # Завантажити результати тестів навіть у разі помилки
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results  # Ім'я артефакта
+        path: ./test-results/*.trx  # Шлях до файлів результатів тестів
+
+    # 7. Крок: Публікуємо зібрані білди як артефакти
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts  # Ім'я артефакта з білдами
+        path: |
+          **/bin/Release/*  # Завантажуємо всі файли з папки Release
+
+    # 8. Крок: Перевірка наявності форматування коду (за бажанням)
+    - name: Check code format
+      run: dotnet format --check  # Перевіряємо, чи дотримано форматування коду
   arduino:
     runs-on: ubuntu-latest  
 
