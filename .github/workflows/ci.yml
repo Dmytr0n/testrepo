@@ -23,7 +23,7 @@ jobs:
     
     - name: Install .NET Framework 4.7.2 Developer Pack
       run: |
-        wget https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer/dotnet-framework-4.7.2-developer-pack-ENU.exe
+        wget https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer
         sudo ./dotnet-framework-4.7.2-developer-pack-ENU.exe /quiet /norestart
 
       
