@@ -3,88 +3,76 @@ name: Build and Test C# Client and Arduino Server
 on:
   push:
     branches:
-      - '*'  # Запускається на будь-якій гілці при пуші
+      - '*'
   pull_request:
     branches:
-      - '*'  # Запускається на будь-якій гілці при пул-реквесті
+      - '*'
 
 jobs:
-  # Джоб для збірки та тестування C# клієнта
   build-csharp:
-    runs-on: windows-latest  # Змінили на Windows для підтримки .NET Framework 4.7.2
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Завантажуємо код репозиторію
-  
-      - name: Download .NET Framework 4.7.2 Developer Pack
-        run: |
-            curl -L -o ndp472-devpack-enu.exe "https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer"
-        shell: pwsh
+        uses: actions/checkout@v3
 
-      - name: Verify file existence
-        run: |
-            if (!(Test-Path "ndp472-devpack-enu.exe")) { 
-                Write-Error "File not found"
-            }
-        shell: pwsh
+      - name: Check .NET SDK
+        run: dotnet --list-sdks
 
       - name: Restore dependencies
         run: dotnet restore ./client/client.csproj
-  
+
       - name: Build C# project
         run: dotnet build --configuration Debug ./client/client.csproj
-  
+
       - name: Run tests
         run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt
-  
+
       - name: Publish test results
         uses: actions/upload-artifact@v3
         with:
           name: Test-Results
           path: test_results.txt
-  
+
       - name: Publish C# binary
         uses: actions/upload-artifact@v3
         with:
           name: CSharp-Binary
           path: ./client/bin/Release/
 
-  # Джоб для компіляції Arduino серверу
   build-arduino:
-    runs-on: ubuntu-latest  # Використовуємо Ubuntu для компіляції Arduino
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Завантажуємо код репозиторію
+        uses: actions/checkout@v3
 
       - name: Install Arduino CLI
         run: |
-          wget https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz  # Завантажуємо Arduino CLI
-          tar -xvf arduino-cli_latest_Linux_64bit.tar.gz  # Розпаковуємо CLI
-          sudo mv arduino-cli /usr/local/bin/  # Переносимо CLI у системний каталог для доступу з будь-якого місця
-          arduino-cli config init  # Ініціалізуємо конфігурацію Arduino CLI
+          wget https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz
+          tar -xvf arduino-cli_latest_Linux_64bit.tar.gz
+          sudo mv arduino-cli /usr/local/bin/
+          arduino-cli config init
 
       - name: Install Arduino Uno core
-        run: arduino-cli core install arduino:avr  # Встановлюємо ядро для Arduino Uno
+        run: arduino-cli core install arduino:avr
 
       - name: Compile Arduino project
-        run: arduino-cli compile --fqbn arduino:avr:uno ./server/server.ino  # Компілюємо проект з файлу server.ino для Arduino Uno (замість шляху поставте свій шлях до server.ino)
+        run: arduino-cli compile --fqbn arduino:avr:uno ./server/server.ino
 
       - name: Upload Arduino binary
         uses: actions/upload-artifact@v3
         with:
           name: Arduino-Binary
-          path: ./server/build/  # Завантажуємо зібрані бінарні файли для Arduino (замість шляху поставте правильний шлях)
+          path: ./server/build/
 
-  # Пост-процесинг: збір артефактів після компіляції
   post:
-    runs-on: ubuntu-latest  # Додано властивість runs-on
-    needs: [build-csharp, build-arduino]  # Цей джоб виконується після успішної збірки клієнта та сервера
+    runs-on: ubuntu-latest
+    needs: [build-csharp, build-arduino]
     steps:
       - name: Create combined artifacts
         run: |
-          mkdir -p ci/artifacts  # Створюємо директорію для артефактів
-          cp -r ./client/bin/Release/* ci/artifacts/  # Копіюємо бінарні файли C# у директорію артефактів
-          cp -r ./server/build/* ci/artifacts/  # Копіюємо бінарні файли Arduino у ту ж директорію (перевірте правильність шляху)
+          mkdir -p ci/artifacts
+          cp -r ./client/bin/Release/* ci/artifacts/
+          cp -r ./server/build/* ci/artifacts/
 
       - name: Upload combined binaries
         uses: actions/upload-artifact@v3
