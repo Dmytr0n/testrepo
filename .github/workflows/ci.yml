@@ -23,13 +23,13 @@ jobs:
 
     # Вкажіть шлях до файлу .sln або .csproj, якщо проект не в корені репозиторію
     - name: Restore dependencies
-      run: dotnet restore path/to/your-solution.sln # або .csproj файл
+      run: dotnet restore ./client/client.sln # або .csproj файл
 
     - name: Build solution
-      run: dotnet build path/to/your-solution.sln --configuration Release --no-restore
+      run: dotnet build ./client/client.sln --configuration Release --no-restore
 
     - name: Run unit tests
-      run: dotnet test path/to/your-solution.sln --configuration Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./test-results
+      run: dotnet test ./client/client.sln --configuration Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./test-results
 
     - name: Upload Test Results
       if: always()
