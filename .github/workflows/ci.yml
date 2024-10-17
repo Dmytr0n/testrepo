@@ -20,6 +20,10 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
+      - name: Install .NET Framework 4.7.2 Developer Pack
+        run: |
+              wget https://download.microsoft.com/download/6/A/8/6A8B7A2F-ABF4-4B4A-8F8F-8C4A8F9E8A5F/dotnet-framework-4.7.2-developer-pack-ENU.exe
+              sudo ./dotnet-framework-4.7.2-developer-pack-ENU.exe /quiet /norestart
 
       - name: Restore dependencies
         run: dotnet restore ./client/client.csproj  # Відновлюємо залежності для C# проєкту (замість шляху поставте свій .csproj файл)
