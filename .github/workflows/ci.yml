@@ -22,9 +22,8 @@ jobs:
         shell: pwsh
 
       - name: Install .NET Framework 4.7.2 Developer Pack
-        run: choco install dotnetfx --version=4.7.2
+        run: choco install dotnetfx472
         shell: pwsh
-
 
       - name: Restore dependencies
         run: dotnet restore ./client/client.csproj
