@@ -36,7 +36,7 @@ jobs:
 
     - name: Run Unit Tests
       run: |
-        dotnet test client/UnitTests/UnitTests.csproj > ci/test-results/unit/unit_test_results.txt
+        dotnet test client/Tests/unit_test_client.csproj > ci/test-results/unit/unit_test_results.txt
 
     - name: Run Integration Tests
       run: |
