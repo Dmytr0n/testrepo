@@ -21,8 +21,9 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./client/client.csproj
 
-      - name: Build project using MSBuild
-        run: msbuild ./client/client.csproj /p:Configuration=Debug
+      - name: Build project
+        run: dotnet build --configuration Debug .client.csproj
+
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt
