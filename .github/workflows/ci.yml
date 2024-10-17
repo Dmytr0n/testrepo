@@ -9,48 +9,39 @@ on:
       - '*'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # Джоб для збірки та тестування C# клієнта
+  build-csharp:
+    runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для запуску
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Завантажуємо код репозиторію
 
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '7.x'
-    
-    - name: Install .NET Framework 4.7.2 Developer Pack
-      run: |
-        wget https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer
-        sudo ./dotnet-framework-4.7.2-developer-pack-ENU.exe /quiet /norestart
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
 
-      
-    # Вкажіть шлях до файлу .sln або .csproj, якщо проект не в корені репозиторію
-    - name: Restore dependencies
-      run: dotnet restore ./client/client.sln # або .csproj файл
+      - name: Restore dependencies
+        run: dotnet restore ./client/client.csproj  # Відновлюємо залежності для C# проєкту (замість шляху поставте свій .csproj файл)
 
-    - name: Build solution
-      run: dotnet build ./client/client.sln --configuration Release --no-restore
+      - name: Build C# project
+        run: dotnet build --configuration Release ./client/client.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
 
-    - name: Run unit tests
-      run: dotnet test ./client/client.sln --configuration Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./test-results
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal --logger trx --results-directory ./client/TestResults  # Запускаємо тести і зберігаємо результати у форматі trx
 
-    - name: Upload Test Results
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: ./test-results/*.trx
+      - name: Publish test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test-Results
+          path: ./client/TestResults/  # Завантажуємо артефакти з результатами тестів
 
-    - name: Publish build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-artifacts
-        path: |
-          **/bin/Release/*
-  
+      - name: Publish C# binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: CSharp-Binary
+          path: ./client/bin/Release/
   arduino:
     runs-on: ubuntu-latest  
 
