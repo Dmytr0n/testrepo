@@ -16,14 +16,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3  # Завантажуємо код репозиторію
   
-      - name: Download .NET Framework 4.7.2 Developer Pack from custom URL
+      - name: Download .NET Framework 4.7.2 Developer Pack
         run: |
-            curl -L -o ndp472-devpack-enu.exe "https://drive.google.com/file/d/1q69MGdDMJph6bUn1gR6A6nVn3VQyUAOY/view?usp=sharing/NetFraemwork/ndp472-devpack-enu.exe"
+            curl -L -o ndp472-devpack-enu.exe "https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer"
         shell: pwsh
 
-      - name: Install .NET Framework 4.7.2 Developer Pack
+      - name: Verify file existence
         run: |
-            Start-Process -FilePath "ndp472-devpack-enu.exe" -ArgumentList "/q" -Wait
+            if (!(Test-Path "ndp472-devpack-enu.exe")) { 
+                Write-Error "File not found"
+            }
         shell: pwsh
 
       - name: Restore dependencies
