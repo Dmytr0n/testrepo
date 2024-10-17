@@ -11,36 +11,37 @@ on:
 jobs:
   # Джоб для збірки та тестування C# клієнта
   build-csharp:
-    runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для запуску
+    runs-on: windows-latest  # Змінили на Windows для підтримки .NET Framework 4.7.2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3  # Завантажуємо код репозиторію
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
-
+  
+      - name: Setup .NET Framework
+        run: |
+          Invoke-WebRequest -Uri "https://download.visualstudio.microsoft.com/download/pr/f1cc7fa0-c8c7-418e-93e3-150975a990a4/ef82cf607e1a67c94283a12c6d31aef9/ndp472-devpack-enu.exe" -OutFile "ndp472-devpack-enu.exe"
+          Start-Process -FilePath "ndp472-devpack-enu.exe" -ArgumentList "/q" -Wait
+        shell: pwsh
+  
       - name: Restore dependencies
-        run: dotnet restore ./client/client.csproj  # Відновлюємо залежності для C# проєкту (замість шляху поставте свій .csproj файл)
-
+        run: dotnet restore ./client/client.csproj
+  
       - name: Build C# project
-        run: dotnet build --configuration Release ./client/client.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
-
+        run: dotnet build --configuration Release ./client/client.csproj
+  
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt  # Запускаємо тести і зберігаємо результати у форматі txt
-
+        run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt
+  
       - name: Publish test results
         uses: actions/upload-artifact@v3
         with:
           name: Test-Results
-          path: test_results.txt  # Завантажуємо артефакти з результатами тестів
-
+          path: test_results.txt
+  
       - name: Publish C# binary
         uses: actions/upload-artifact@v3
         with:
           name: CSharp-Binary
-          path: ./client/bin/Release/  # Завантажуємо зібрані бінарні файли клієнта
+          path: ./client/bin/Release/
 
   # Джоб для компіляції Arduino серверу
   build-arduino:
