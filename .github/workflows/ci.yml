@@ -9,7 +9,6 @@ on:
       - '*'
 
 jobs:
- name: Build and Test C# Client and Arduino Server
   build-and-test:
     runs-on: windows-latest  # Використовуємо останню версію Windows для запуску
 
