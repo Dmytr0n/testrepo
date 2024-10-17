@@ -3,15 +3,15 @@ name: Build and Test C# Client and Arduino Server
 on:
   push:
     branches:
-      - '*'
+      - '*'  # Запускається на будь-якій гілці при пуші
   pull_request:
     branches:
-      - '*'  
+      - '*'  # Запускається на будь-якій гілці при пул-реквесті
+
 jobs:
   # Джоб для збірки та тестування C# клієнта
   build-csharp:
     runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для запуску
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3  # Завантажуємо код репозиторію
@@ -28,13 +28,13 @@ jobs:
         run: dotnet build --configuration Release ./client/client.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal --logger trx --results-directory ./client/TestResults  # Запускаємо тести і зберігаємо результати у форматі trx
+        run: dotnet test --no-build --verbosity normal --logger "console;verbosity=detailed" > test_results.txt  # Запускаємо тести і зберігаємо результати у форматі txt
 
       - name: Publish test results
         uses: actions/upload-artifact@v3
         with:
           name: Test-Results
-          path: ./client/TestResults/  # Завантажуємо артефакти з результатами тестів
+          path: test_results.txt  # Завантажуємо артефакти з результатами тестів
 
       - name: Publish C# binary
         uses: actions/upload-artifact@v3
@@ -45,7 +45,6 @@ jobs:
   # Джоб для компіляції Arduino серверу
   build-arduino:
     runs-on: ubuntu-latest  # Використовуємо Ubuntu для компіляції Arduino
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3  # Завантажуємо код репозиторію
@@ -71,6 +70,7 @@ jobs:
 
   # Пост-процесинг: збір артефактів після компіляції
   post:
+    runs-on: ubuntu-latest  # Додано властивість runs-on
     needs: [build-csharp, build-arduino]  # Цей джоб виконується після успішної збірки клієнта та сервера
     steps:
       - name: Create combined artifacts
@@ -83,5 +83,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Combined-Binaries
-          path: ./ci/artifacts/  # Завантажуємо всі артефакти зібраних бінарних файлів для C# та Arduino
-
+          path: ./ci/artifacts
