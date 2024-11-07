@@ -1,4 +1,4 @@
-name: Build C# GUI App
+name: Build and Test C# Client and Arduino Server
 
 on:
   push:
@@ -6,70 +6,81 @@ on:
       - '*'
   pull_request:
     branches:
-      - '*'
-
+      - '*'  
 jobs:
-  build:
-    runs-on: windows-latest
+  # Джоб для збірки та тестування C# клієнта
+  build-csharp:
+    runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для запуску
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Завантажуємо код репозиторію
 
-    - name: Set up .NET Framework 4.7.2
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '16.0' # Visual Studio version
-        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
-
-    - name: Restore NuGet packages
-      run: nuget restore client/client.sln
-
-    - name: Build the project
-      run: msbuild client/client.sln /p:Configuration=Release /p:OutputPath=ci/bin
-
-    - name: Create test results directories
-      run: |
-        mkdir ci/test-results/unit
-       
-    - name: Run Unit Tests
-      run: |
-        dotnet test client/Tests/unit_test_client.csproj > ci/test-results/unit/unit_test_results.txt
-
-    - name: Create artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Build and Test Artifacts
-        path: |
-          ci/bin
-          ci/test-results/unit/unit_test_results.txt
-          ci/test-results/integration/integration_test_results.txt
-          ci/test-results/functional/functional_test_results.txt
-  arduino:
-    runs-on: ubuntu-latest  
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
         with:
-          version: '0.19.2'  
+          dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
 
-      
-      - name: Install Arduino AVR platform
-        run: arduino-cli core install arduino:avr  
+      - name: Restore dependencies
+        run: dotnet restore ./client/client.csproj  # Відновлюємо залежності для C# проєкту (замість шляху поставте свій .csproj файл)
 
-      
-      - name: Build Arduino Project
-        run: |
-          arduino-cli compile --fqbn arduino:avr:uno server/server.ino  
-          
-      
-      - name: Upload Arduino Build Artifact
+      - name: Build C# project
+        run: dotnet build --configuration Release ./client/client.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal --logger trx --results-directory ./client/TestResults  # Запускаємо тести і зберігаємо результати у форматі trx
+
+      - name: Publish test results
         uses: actions/upload-artifact@v3
         with:
-          name: arduino-build  
-          path: server/build/*  
+          name: Test-Results
+          path: ./client/TestResults/  # Завантажуємо артефакти з результатами тестів
+
+      - name: Publish C# binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: CSharp-Binary
+          path: ./client/bin/Release/  # Завантажуємо зібрані бінарні файли клієнта
+
+  # Джоб для компіляції Arduino серверу
+  build-arduino:
+    runs-on: ubuntu-latest  # Використовуємо Ubuntu для компіляції Arduino
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Завантажуємо код репозиторію
+
+      - name: Install Arduino CLI
+        run: |
+          wget https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz  # Завантажуємо Arduino CLI
+          tar -xvf arduino-cli_latest_Linux_64bit.tar.gz  # Розпаковуємо CLI
+          sudo mv arduino-cli /usr/local/bin/  # Переносимо CLI у системний каталог для доступу з будь-якого місця
+          arduino-cli config init  # Ініціалізуємо конфігурацію Arduino CLI
+
+      - name: Install Arduino Uno core
+        run: arduino-cli core install arduino:avr  # Встановлюємо ядро для Arduino Uno
+
+      - name: Compile Arduino project
+        run: arduino-cli compile --fqbn arduino:avr:uno ./server/server.ino  # Компілюємо проект з файлу server.ino для Arduino Uno (замість шляху поставте свій шлях до server.ino)
+
+      - name: Upload Arduino binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: Arduino-Binary
+          path: ./server/build/  # Завантажуємо зібрані бінарні файли для Arduino (замість шляху поставте правильний шлях)
+
+  # Пост-процесинг: збір артефактів після компіляції
+  post:
+    needs: [build-csharp, build-arduino]  # Цей джоб виконується після успішної збірки клієнта та сервера
+    steps:
+      - name: Create combined artifacts
+        run: |
+          mkdir -p ci/artifacts  # Створюємо директорію для артефактів
+          cp -r ./client/bin/Release/* ci/artifacts/  # Копіюємо бінарні файли C# у директорію артефактів
+          cp -r ./server/build/* ci/artifacts/  # Копіюємо бінарні файли Arduino у ту ж директорію (перевірте правильність шляху)
+
+      - name: Upload combined binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: Combined-Binaries
+          path: ./ci/artifacts/  # Завантажуємо всі артефакти зібраних бінарних файлів для C# та Arduino
