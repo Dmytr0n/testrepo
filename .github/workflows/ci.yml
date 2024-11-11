@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: Build and Test C# Client 
+=======
+name: Build and Test C# Project
+>>>>>>> b9e820f2133f260d8ea879c9dd45d3fecc2873aa
 
 on:
   push:
@@ -19,6 +23,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
+<<<<<<< HEAD
           dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
 
       - name: Restore dependencies
@@ -29,3 +34,12 @@ jobs:
 
       
   
+=======
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore client/gameclient.sln
+
+      - name: Build project
+        run: dotnet build client/gameclient.sln --configuration Release
+>>>>>>> b9e820f2133f260d8ea879c9dd45d3fecc2873aa
