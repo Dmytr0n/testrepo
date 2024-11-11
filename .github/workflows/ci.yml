@@ -22,10 +22,10 @@ jobs:
           dotnet-version: '6.0.x'  
 
       - name: Restore dependencies
-        run: dotnet restore game_client.sln  
+        run: dotnet restore gameclient.sln  
 
       - name: Build project
-        run: dotnet build game_client.sln --configuration Release --no-restore
+        run: dotnet build gameclient.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test game_client.sln --no-build --verbosity normal
+        run: dotnet test gameclient.sln --no-build --verbosity normal
