@@ -30,10 +30,12 @@ jobs:
     
     - name: Run Unit Tests
       run: |
-           dotnet test client/Tests/testingMenu.csproj --logger "trx;LogFileName=test_results.trx"
-           mkdir -p ci/test-results/unit  # Створює директорію для збереження результатів
-           mv test_results.trx ci/test-results/unit/unit_test_results.txt  # Переміщає результати в потрібну директорію
-    
+            dotnet test client/Tests/testingMenu.csproj --logger "trx;LogFileName=test_results.trx"
+
+    - name: List files after tests
+      run: |
+            dir
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
