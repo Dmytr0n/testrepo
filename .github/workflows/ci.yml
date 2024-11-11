@@ -35,11 +35,11 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: game-client-artifacts
-        path: D:/a/testrepo/testrepo/ci/bin
+        path: $(Build.ArtifactStagingDirectory)\bin
     
     - name: Upload test artifacts
       uses: actions/upload-artifact@v3
       with:
         name: tests artifacts
-        path: D:/a/testrepo/testrepo/ci/test-results/unit
+        path: $(Build.ArtifactStagingDirectory)\test-results
 
