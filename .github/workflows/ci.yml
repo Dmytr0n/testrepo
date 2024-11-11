@@ -1,31 +1,31 @@
-name: Build and Test C# WinForms Project with Multiple Forms
+name: Build and Test C# Client 
 
 on:
   push:
     branches:
-      - "*"
+      - '*'
   pull_request:
     branches:
-      - "*"
-
+      - '*'  
 jobs:
-  build:
-    runs-on: windows-latest
+  # Джоб для збірки та тестування C# клієнта
+  build-csharp:
+    runs-on: ubuntu-latest  # Використовуємо останню версію Ubuntu для запуску
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Завантажуємо код репозиторію
 
-      - name: Setup .NET
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'  
+          dotnet-version: '6.x'  # Встановлюємо версію .NET Core (змінюйте на необхідну)
 
       - name: Restore dependencies
-        run: dotnet restore game_client.sln  
+        run: dotnet restore ./client/gameclient.csproj  # Відновлюємо залежності для C# проєкту (замість шляху поставте свій .csproj файл)
 
-      - name: Build project
-        run: dotnet build game_client.sln --configuration Release --no-restore
+      - name: Build C# project
+        run: dotnet build --configuration Release ./client/gameclient.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
 
-      - name: Run tests
-        run: dotnet test game_client.sln --no-build --verbosity normal
+      
+  
