@@ -3,10 +3,10 @@ name: Build and Test C# Project
 on:
   push:
     branches:
-      - main
+      - "*"
   pull_request:
     branches:
-      - main
+      - "*"
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '6.0.x'  # Укажите нужную версию .NET SDK
 
       - name: Restore dependencies
-        run: dotnet restore client/gameclient.sln  # Указываем путь к файлу в папке `client`
+        run: dotnet restore client/gameclient.sln 
 
       - name: Build project
         run: dotnet build client/gameclient.sln --configuration Release --no-restore
