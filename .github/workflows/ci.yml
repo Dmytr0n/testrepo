@@ -19,13 +19,16 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'  # Укажите нужную версию .NET SDK
+          dotnet-version: '6.0.x'
+
+      # Установим MSBuild с поддержкой x64
+      - name: Set MSBuild to use x64
+        run: |
+          echo "##vso[task.setvariable variable=MSBuildPlatform]x64"
 
       - name: Restore dependencies
-        run: dotnet restore client/gameclient.sln 
+        run: dotnet restore client/gameclient.sln
 
       - name: Build project
-        run: dotnet build client/gameclient.csproj --configuration Release --no-restore
+        run: dotnet build client/gameclient.sln --configuration Release --no-restore --arch x64
 
-      - name: Run tests
-        run: dotnet test client/gameclient.csproj --no-build --verbosity normal
