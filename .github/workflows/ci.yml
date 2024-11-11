@@ -1,12 +1,12 @@
-name: Build and Test C# WinForms Project with Multiple Forms
+name: Build and Test C# Project
 
 on:
   push:
     branches:
-      - "*"
+      - main
   pull_request:
     branches:
-      - "*"
+      - main
 
 jobs:
   build:
@@ -19,13 +19,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'  
+          dotnet-version: '6.0.x'  # Укажите нужную версию .NET SDK
 
       - name: Restore dependencies
-        run: dotnet restore gameclient.sln  
+        run: dotnet restore client/gameclient.sln  # Указываем путь к файлу в папке `client`
 
       - name: Build project
-        run: dotnet build gameclient.sln --configuration Release --no-restore
+        run: dotnet build client/gameclient.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test gameclient.sln --no-build --verbosity normal
+        run: dotnet test client/gameclient.sln --no-build --verbosity normal
