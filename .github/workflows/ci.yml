@@ -27,3 +27,9 @@ jobs:
 
     - name: Build the project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=ci/bin
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+          name: game-client-artifacts
+          path: ci/bin/
