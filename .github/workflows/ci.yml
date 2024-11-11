@@ -26,14 +26,14 @@ jobs:
       run: nuget restore client/gameclient.sln
 
     - name: Build the project
-      run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=ci/bin
+      run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=client/ci/bin
     
 
     - name: List files in output directory
-      run: dir ci/bin
+      run: dir client/ci/bin
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: game-client-artifacts
-        path: ci/bin/
+        path: client/ci/bin
