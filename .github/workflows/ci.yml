@@ -21,14 +21,8 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
-      # Установим MSBuild с поддержкой x64
-      - name: Set MSBuild to use x64
-        run: |
-          echo "##vso[task.setvariable variable=MSBuildPlatform]x64"
-
       - name: Restore dependencies
         run: dotnet restore client/gameclient.sln
 
       - name: Build project
-        run: dotnet build client/gameclient.csproj --configuration Release --no-restore --arch x64
-
+        run: dotnet build client/gameclient.sln --configuration Release
