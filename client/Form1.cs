@@ -316,7 +316,7 @@ namespace game_client
             string portName = ini.Read("TextBoxValues", "TextBox1", "");
             try
             {
-                using (SerialPort serialPort = new SerialPort(portName, 9600))
+                using (serialPort = new SerialPort(portName, 9600))
                 {
                     serialPort.ReadTimeout = 3000; // Встановлюємо таймаут читання на 3 секунди
                     serialPort.Open();
