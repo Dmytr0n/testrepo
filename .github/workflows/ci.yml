@@ -28,6 +28,11 @@ jobs:
         run: |
           curl -L -o ndp472-devpack-enu.exe "https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472"
         shell: pwsh
+
+      - name: Install .NET Framework 4.7.2 Developer Pack
+        run: |
+          Start-Process -FilePath "ndp472-devpack-enu.exe" -ArgumentList "/q" -Wait
+        shell: pwsh
       
       - name: Build C# project
         run: dotnet build --configuration Release ./client/gameclient.csproj  # Збираємо C# проєкт в режимі Release (замість шляху поставте свій .csproj файл)
