@@ -28,11 +28,8 @@ jobs:
     - name: Build project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
     
-    - name: Run Unit Tests and save results
-      run: |
-        dotnet test client/Tests/testingMenu.csproj --logger "trx;LogFileName=test_results.trx"  # Це згенерує результат у форматі .trx
-        mkdir -p D:/a/testrepo/testrepo/ci/test-results/unit  # Створює директорію для збереження результатів
-        mv test_results.trx D:/a/testrepo/testrepo/ci/test-results/unit/unit_test_results.txt  # Переміщає результати в потрібну директорію
+    - name: Run Unit Tests
+      run: dotnet test client/Tests/unit_test_client.csproj --logger "trx;LogFileName=test_results.trx"
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
