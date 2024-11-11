@@ -1,75 +1,31 @@
-name: Build C# GUI App
+name: Build and Test C# WinForms Project with Multiple Forms
 
 on:
   push:
     branches:
-      - '*'
+      - "*"
   pull_request:
     branches:
-      - '*'
+      - "*"
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up .NET Framework 4.7.2
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '16.0' # Visual Studio version
-        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
-
-    - name: Restore NuGet packages
-      run: nuget restore client/client.sln
-
-    - name: Build the project
-      run: msbuild client/client.sln /p:Configuration=Release /p:OutputPath=ci/bin
-
-    - name: Create test results directories
-      run: |
-        mkdir ci/test-results/unit
-       
-    - name: Run Unit Tests
-      run: |
-        dotnet test client/Tests/unit_test_client.csproj > ci/test-results/unit/unit_test_results.txt
-
-    - name: Create artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Build and Test Artifacts
-        path: |
-          ci/bin
-          ci/test-results/unit/unit_test_results.txt
-          ci/test-results/integration/integration_test_results.txt
-          ci/test-results/functional/functional_test_results.txt
-  arduino:
-    runs-on: ubuntu-latest  
-
-    steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          version: '0.19.2'  
+          dotnet-version: '6.0.x'  
 
-      
-      - name: Install Arduino AVR platform
-        run: arduino-cli core install arduino:avr  
+      - name: Restore dependencies
+        run: dotnet restore game client.sln  
 
-      
-      - name: Build Arduino Project
-        run: |
-          arduino-cli compile --fqbn arduino:avr:uno server/server.ino  
-          
-      
-      - name: Upload Arduino Build Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: arduino-build  
-          path: server/build/*  
+      - name: Build project
+        run: dotnet build game client.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test game client.sln --no-build --verbosity normal
