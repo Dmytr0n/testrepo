@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.33529.622
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "game client", "game client.csproj", "{9967AAAF-C10F-4E1B-8231-DFF4E652B8EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameclient", "gameclient.csproj", "{9967AAAF-C10F-4E1B-8231-DFF4E652B8EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
