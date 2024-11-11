@@ -2,6 +2,7 @@
 using System;
 using game_client;
 using System.Windows.Forms;
+using System.Threading;
 
 
 namespace testingMenu
@@ -16,11 +17,20 @@ namespace testingMenu
         {
             // Arrange
             var mainForm = new Form1();
-            mainForm.Show();  // Відображаємо форму
+
+            // Запускаємо форму в окремому потоці
+            var formThread = new Thread(() => Application.Run(mainForm));
+            formThread.SetApartmentState(ApartmentState.STA);  // STA потрібен для WinForms
+            formThread.Start();
+
+            // Очікуємо, поки форма ініціалізується
+            Thread.Sleep(1000); // Час для ініціалізації форми
 
             // Act
-            mainForm.ModMenu();
-            mainForm.Refresh();  // Оновлюємо для відображення змін
+            mainForm.Invoke((MethodInvoker)delegate
+            {
+                mainForm.ModMenu();
+            });
 
             // Assert
             Assert.IsFalse(mainForm.button1.Visible, "button1 should be hidden.");
@@ -35,6 +45,13 @@ namespace testingMenu
             Assert.IsTrue(mainForm.button2.Visible, "button2 should be visible.");
             Assert.IsTrue(mainForm.button3.Visible, "button3 should be visible.");
             Assert.IsTrue(mainForm.button4.Visible, "button4 should be visible.");
+
+            // Закриваємо форму
+            mainForm.Invoke((MethodInvoker)delegate
+            {
+                mainForm.Close();
+            });
+            formThread.Join(); // Очікуємо завершення потоку
         }
     }
 }
