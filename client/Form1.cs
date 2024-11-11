@@ -23,7 +23,7 @@ namespace game_client
         private bool onLoad;
         private int score1;
         private int score2;
-        SerialPort serialPort;
+        private SerialPort serialPort = new SerialPort();
         private List<int> player1Moves = new List<int>();
         private Timer clickTimer;
         private Random random = new Random();
@@ -562,7 +562,7 @@ namespace game_client
             string portName = ini.Read("TextBoxValues", "TextBox1", ""); // Значення за замовчуванням: порожнє
             try
             {
-                using (SerialPort serialPort = new SerialPort(portName, 9600))
+                using (serialPort = new SerialPort(portName, 9600))
                 {
                     serialPort.ReadTimeout = 3000; // Встановлюємо таймаут читання у 3 секунди
                     serialPort.Open(); // Відкриваємо порт
@@ -682,6 +682,11 @@ namespace game_client
             }
             ResetScore();
             Player1();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
