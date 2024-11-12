@@ -32,17 +32,8 @@ jobs:
       run: mkdir -p ./ci/test-results/unit  # Використовуйте відносний шлях
 
     - name: Run tests
-      run: dotnet test client/Tests/testingMenu.csproj --no-build --configuration Release --verbosity normal --logger "txt;LogFileName=testResults.txt" --results-directory ./ci/test-results/unit
+      run: dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll 
     
-    - name: Verify test results directory contents
-      run: ls ./ci/test-results/unit  # Використовуємо ls для перевірки вмісту каталогу
-    
-    - name: Upload test artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: tests-artifacts
-        path: ./ci/test-results/unit/testResults.txt  # Шлях до артефакту
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
