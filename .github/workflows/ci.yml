@@ -43,5 +43,30 @@ jobs:
       with:
         name: game-client-artifacts
         path: D:/a/testrepo/testrepo/ci/bin
+
+     # Arduino build job
+  arduino-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      with:
+        version: latest
+
+    - name: Install board package
+      run: arduino-cli core install arduino:avr
+
+    - name: Compile Arduino code
+      run: |
+        arduino-cli compile --fqbn arduino:avr:uno client/server.ino
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: arduino-build
+        path: path/to/your/arduino_file.ino.build/*.hex
     
    
