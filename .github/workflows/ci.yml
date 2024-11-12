@@ -32,7 +32,7 @@ jobs:
       run: mkdir -p D:/a/testrepo/testrepo/ci/test-results/unit
     
     - name: Run tests
-      run: dotnet test client/Tests/testingMenu.csproj --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test_results.trx" --results-directory D:/a/testrepo/testrepo/ci/test-results/unit
+      run: dotnet test client/Tests/testingMenu.csproj --no-build --configuration Release --verbosity normal --logger "txt;LogFileName=testResults.txt" --results-directory D:/a/testrepo/testrepo/ci/test-results/unit
 
     - name: Verify test results directory contents
       run: dir D:/a/testrepo/testrepo/ci/test-results/unit
