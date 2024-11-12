@@ -21,6 +21,7 @@ namespace testingMenu
 
             using (var mainForm = new Form1())
             {
+                mainForm.Show();
                 mainForm.CreateControl();
 
                 mainForm.ModMenu();
@@ -66,5 +67,3 @@ namespace testingMenu
         }
     }
 }
-
-

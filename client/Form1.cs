@@ -52,7 +52,7 @@ namespace game_client
             onLoad = false;
         }
         //Метод для завантаження меню для вибору режимів
-        private void ModMenu()
+        public void ModMenu()
         {
             button1.Visible = false;
             button22.Visible = false;
@@ -68,7 +68,7 @@ namespace game_client
             
         }
         //Метод для завантаження головного меню
-        private void StartMenu()
+        public void StartMenu()
         {
             // Вказуємо шлях до ini файлу
             IniFile ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
@@ -316,7 +316,7 @@ namespace game_client
             string portName = ini.Read("TextBoxValues", "TextBox1", "");
             try
             {
-                using (serialPort = new SerialPort(portName, 9600))
+                using (SerialPort serialPort = new SerialPort(portName, 9600))
                 {
                     serialPort.ReadTimeout = 3000; // Встановлюємо таймаут читання на 3 секунди
                     serialPort.Open();
