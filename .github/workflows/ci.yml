@@ -52,21 +52,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install Arduino CLI
+      run: |
+        mkdir -p ~/arduino-cli
+        wget -qO- https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz | tar xvz -C ~/arduino-cli
+        sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/
+
     - name: Set up Arduino CLI
-      uses: arduino/setup-arduino-cli@v1
-      with:
-        version: latest
+      run: |
+        arduino-cli config init
+        arduino-cli core update-index
 
     - name: Install board package
       run: arduino-cli core install arduino:avr
 
     - name: Compile Arduino code
       run: |
-        arduino-cli compile --fqbn arduino:avr:uno client/server.ino
+        arduino-cli compile --fqbn arduino:avr:uno path/to/your/arduino_file.ino
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: arduino-build
         path: path/to/your/arduino_file.ino.build/*.hex
+
     
    
