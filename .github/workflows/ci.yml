@@ -70,11 +70,12 @@ jobs:
       run: |
         arduino-cli compile --fqbn arduino:avr:uno server/server.ino
 
-    - name: Upload build artifacts
+    - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: arduino-build
-        path: path/to/your/arduino_file.ino.build/*.hex
+        path: server/.build/arduino.avr.uno/server.ino.hex
+
 
     
    
