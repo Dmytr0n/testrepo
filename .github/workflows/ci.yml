@@ -27,22 +27,25 @@ jobs:
 
     - name: Build project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
-
-    - name: Run tests and save results as .trx
-      run: |
-        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
-
-    - name: Upload test results as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: D:\a\testrepo\testrepo\TestResults\
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: game-client-artifacts
         path: D:/a/testrepo/testrepo/ci/bin
+
+  testing-client:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Run tests and save results as .trx
+            run: |
+                  dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
+
+          - name: Upload test results as artifact
+            uses: actions/upload-artifact@v3
+            with:
+                  name: test-results
+                  path: D:\a\testrepo\testrepo\TestResults\
 
      # Arduino build job
   arduino-build:
