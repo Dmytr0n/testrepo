@@ -27,12 +27,9 @@ jobs:
 
     - name: Build project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
-    
-    - name: Create test results directory
-      run: mkdir -p ./ci/test-results/unit  # Використовуйте відносний шлях
 
     - name: Run tests
-      run: dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll 
+      run: dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" 
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
