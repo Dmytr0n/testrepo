@@ -70,11 +70,17 @@ jobs:
       run: |
         arduino-cli compile --fqbn arduino:avr:uno server/server.ino
 
+    - name: Find and Upload Arduino build artifacts
+      run: |
+            hex_path=$(find . -name "*.hex" | head -n 1)
+            echo "HEX_PATH=$hex_path" >> $GITHUB_ENV
+
     - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: arduino-build
-        path: server/.build/arduino.avr.uno/server.ino.hex
+          name: arduino-build
+          path: ${{ env.HEX_PATH }}
+
 
 
     
