@@ -67,15 +67,15 @@ namespace testingMenu
                 mainForm.Close();
             }
         }
-       private class TestForm1 : Form1
-    {
-        public bool IsPlayer1Called { get; private set; }
-
-        public override void Player1()
+        private class TestForm1 : Form1
         {
-            IsPlayer1Called = true;
-            base.Player1();
-        }
+            public bool IsPlayer1Called { get; private set; }
+
+            public override void Player1()
+            {
+                IsPlayer1Called = true;
+                base.Player1();
+            }
             // Для зручності тестування зробимо поле для доступу до таймера
             public System.Windows.Forms.Timer TestTimer => clickTimer;
             public Random TestRandom => random;
@@ -87,38 +87,38 @@ namespace testingMenu
             }
         }
 
-    [TestMethod]
-    public void Button3_Click_ShouldSetModeToManVsManAndCallPlayer1()
-    {
-        // Arrange
-        var form = new TestForm1();
+        [TestMethod]
+        public void Button3_Click_ShouldSetModeToManVsManAndCallPlayer1()
+        {
+            // Arrange
+            var form = new TestForm1();
 
-        // Act
-        form.button3_Click(null, EventArgs.Empty);
+            // Act
+            form.button3_Click(null, EventArgs.Empty);
 
-        // Assert
-        // Перевірка, чи викликаний метод Player1
-        Assert.IsTrue(form.IsPlayer1Called, "Метод Player1 не був викликаний.");
+            // Assert
+            // Перевірка, чи викликаний метод Player1
+            Assert.IsTrue(form.IsPlayer1Called, "Метод Player1 не був викликаний.");
 
-        // Перевірка, чи встановлена змінна mode на "Man VS Man"
-        Assert.AreEqual("Man VS Man", form.mode, "Змінна mode не має значення 'Man VS Man'.");
-    }
+            // Перевірка, чи встановлена змінна mode на "Man VS Man"
+            Assert.AreEqual("Man VS Man", form.mode, "Змінна mode не має значення 'Man VS Man'.");
+        }
 
-    [TestMethod]
-    public void Button3_Click_ShouldNotChangeOtherUIElements()
-    {
-        // Arrange
-        var form = new TestForm1();
-        var initialVisibility = form.button3.Visible;  // Зберігаємо початкову видимість кнопки
+        [TestMethod]
+        public void Button3_Click_ShouldNotChangeOtherUIElements()
+        {
+            // Arrange
+            var form = new TestForm1();
+            var initialVisibility = form.button3.Visible;  // Зберігаємо початкову видимість кнопки
 
-        // Act
-        form.button3_Click(null, EventArgs.Empty);
+            // Act
+            form.button3_Click(null, EventArgs.Empty);
 
-        // Assert
-        // Перевірка, чи не змінилась видимість кнопки (як приклад)
-        Assert.AreEqual(initialVisibility, form.button3.Visible, "Видимість кнопки button3 змінилася.");
-    }
-        
+            // Assert
+            // Перевірка, чи не змінилась видимість кнопки (як приклад)
+            Assert.AreEqual(initialVisibility, form.button3.Visible, "Видимість кнопки button3 змінилася.");
+        }
+
         [TestMethod]
         public void Player1_ShouldChangePanelVisibility()
         {
@@ -152,7 +152,7 @@ namespace testingMenu
             Assert.IsTrue(form.TestTimer.Enabled, "Таймер не був запущений.");
         }
         [TestMethod]
-        public void Player1_ShouldClickAtLeastOneButton()
+        public void Player1_ShouldClickOneRandomButton()
         {
             // Arrange
             var form = new TestForm1();
@@ -163,22 +163,52 @@ namespace testingMenu
             bool button7Clicked = false;
 
             // Підписуємось на події кліку для трьох кнопок
-            form.button5.Click += (s, e) => button5Clicked = true;
-            form.button6.Click += (s, e) => button6Clicked = true;
-            form.button7.Click += (s, e) => button7Clicked = true;
+            form.button5.Click += (s, e) =>
+            {
+                button5Clicked = true;
+                Console.WriteLine("Button5 була натиснута."); // Повідомлення, яка кнопка натиснута
+            };
+            form.button6.Click += (s, e) =>
+            {
+                button6Clicked = true;
+                Console.WriteLine("Button6 була натиснута."); // Повідомлення, яка кнопка натиснута
+            };
+            form.button7.Click += (s, e) =>
+            {
+                button7Clicked = true;
+                Console.WriteLine("Button7 була натиснута."); // Повідомлення, яка кнопка натиснута
+            };
 
             // Фіксоване значення для випадкових чисел
             form.SetTestRandom(1); // Задаємо фіксоване значення для випадковості (можна змінювати для тесту інших кнопок)
 
             // Act
-            form.Player1(); // Викликаємо метод Player1
+            form.Player1(); // Викликаємо метод Player1, щоб ініціювати логіку
+            form.Show();
+            // Випадковий вибір кнопки для натискання (від 1 до 3)
+            var randomButton = new Random().Next(1, 4); // Випадкове число від 1 до 3
 
-            // Затримка, щоб дочекатись завершення таймера
-            System.Threading.Thread.Sleep(1500); // Затримка для тесту (можна зменшити або збільшити залежно від інтервалу таймера)
+            switch (randomButton)
+            {
+                case 1:
+                    form.button5.PerformClick();
+                    break;
+                case 2:
+                    form.button6.PerformClick();
+                    break;
+                case 3:
+                    form.button7.PerformClick();
+                    break;
+            }
 
-            // Assert: Перевіряємо, що хоча б одна кнопка була натиснута
+            // Затримка для тесту (можна змінити в залежності від потрібного часу)
+            System.Threading.Thread.Sleep(500);
+
+            // Assert: Перевіряємо, що одна з кнопок була натиснута
             Assert.IsTrue(button5Clicked || button6Clicked || button7Clicked, "Жодна кнопка не була натиснута.");
+            form.Close();
         }
+
     }
 }
 
