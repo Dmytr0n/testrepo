@@ -32,10 +32,6 @@ jobs:
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
 
-    - name: Run tests and save results as .txt
-      run: |
-        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "console;verbosity=detailed" > test_results.txt
-
     - name: Upload test results as artifact
       uses: actions/upload-artifact@v3
       with:
