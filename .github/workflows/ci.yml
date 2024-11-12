@@ -78,7 +78,7 @@ jobs:
     
     - name: Run Tests
       run: |
-            arduino-cli compile --fqbn arduino:avr:uno Tests/testserver.ino
+            arduino-cli compile --fqbn arduino:avr:uno Tests/Test.ino
         
 
     
