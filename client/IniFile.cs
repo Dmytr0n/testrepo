@@ -8,7 +8,12 @@ using System.IO;
 
 namespace game_client
 {
-    public class IniFile
+    public interface IIniFile
+    {
+        string Read(string section, string key, string defaultValue);
+    }
+
+    public class IniFile:IIniFile
     {
         private string path;
 

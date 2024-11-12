@@ -19,14 +19,14 @@ namespace game_client
         private bool winStrategy;
         private bool randomMode;
         private bool musicOn;
-        private string mode;
+        public string mode;
         private bool onLoad;
         private int score1;
         private int score2;
         private SerialPort serialPort = new SerialPort();
         private List<int> player1Moves = new List<int>();
-        private Timer clickTimer;
-        private Random random = new Random();
+        public Timer clickTimer;
+        public Random random = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -123,13 +123,13 @@ namespace game_client
             g.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
         }
 
-        private void button3_Click(object sender, EventArgs e) // кнопка Man Vs Man
+        public void button3_Click(object sender, EventArgs e) // кнопка Man Vs Man
         {
             Player1();
             mode = "Man VS Man";
         }
         //функція яка відкриває вибір камінь або ножниці або бумагу користувачу 1
-        private void Player1()
+        public virtual void Player1()
         {
             panel1.Visible = false;
             panel2.Visible = false;
@@ -341,6 +341,7 @@ namespace game_client
                         button22.Visible = true;
                         panel17.Visible = true;
                         pictureBox15.Visible = true;
+                        return;
                     }
                 }
             }
@@ -353,6 +354,7 @@ namespace game_client
                 button22.Visible = true;
                 panel17.Visible = true;
                 pictureBox15.Visible = true;
+                return;
             }
         }
         // вибір фінально екран (нічия, виграв 1 гравець, виграв 2 гравеець)
