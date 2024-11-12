@@ -29,7 +29,7 @@ jobs:
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
     
     - name: Run tests
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test client/testingMenu.csproj --no-build --configuration Release --verbosity normal
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
