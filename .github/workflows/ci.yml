@@ -61,7 +61,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: client/UnitTestProject1/bin/Debug/test_results.trx
+        path: ./TestResults
 
   arduino-build:
     runs-on: ubuntu-latest
