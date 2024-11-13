@@ -69,7 +69,11 @@ jobs:
     - name: Compile Arduino code
       run: |
             arduino-cli compile --fqbn arduino:avr:uno server/server.ino --output-dir ./build
-    
+
+    - name: Upload to Arduino
+      run: |
+            arduino-cli board list
+
     - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
       with:
