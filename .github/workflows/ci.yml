@@ -1,4 +1,4 @@
-name: Build C# GUI App
+name: Build C# GUI App and Arduino Code
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - '*'
 
 jobs:
-  build:
+  client-build:
     runs-on: windows-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
     - name: Set up .NET Framework 4.7.2
       uses: microsoft/setup-msbuild@v1
       with:
-        vs-version: '16.0' # Visual Studio version
+        vs-version: '16.0'
         vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
 
     - name: Restore NuGet packages
@@ -27,6 +27,24 @@ jobs:
 
     - name: Build project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: game-client-artifacts
+        path: D:/a/testrepo/testrepo/ci/bin
+
+  # Separate job for running tests
+  testing-client:
+    runs-on: windows-latest
+    needs: client-build  # Ensure tests run after the client-build job
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore client/gameclient.sln
 
     - name: Run tests and save results as .trx
       run: |
@@ -37,14 +55,8 @@ jobs:
       with:
         name: test-results
         path: D:\a\testrepo\testrepo\TestResults\
-    
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: game-client-artifacts
-        path: D:/a/testrepo/testrepo/ci/bin
 
-     # Arduino build job
+  # Arduino build job
   arduino-build:
     runs-on: ubuntu-latest
 
@@ -70,15 +82,12 @@ jobs:
       run: |
             arduino-cli compile --fqbn arduino:avr:uno server/server.ino --output-dir ./build
 
-    - name: Upload to Arduino
-      run: |
-            arduino-cli board list
-
     - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: arduino-build
         path: ./build
+
         
 
     
