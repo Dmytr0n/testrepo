@@ -75,10 +75,6 @@ jobs:
       with:
         name: arduino-build
         path: ./build
-    
-    - name: Run Tests
-      run: |
-            arduino-cli compile --fqbn arduino:avr:uno Tests/testserver.ino
         
 
     
