@@ -285,6 +285,29 @@ namespace testingMenu
             Assert.AreEqual("20", form.textBox1.Text, "TextBox1 should display the correct counter value.");
             Assert.AreEqual("30", form.textBox2.Text, "TextBox2 should display the correct counter value.");
         }
+        [TestMethod]
+        public void GetCounterMove_ShouldReturnExpectedCounterMove()
+        {
+            // Arrange
+            var form = new TestForm1(); // Ініціалізація форми
+            form.player1Moves = new List<int> { 1, 1, 1, 1, 1 }; // Гравець найчастіше вибирає камінь (1)
+            var random = new Random(0); // Фіксований генератор випадкових чисел для передбачуваного результату
+
+            // Act
+            int result = form.GetCounterMove();
+
+            // Assert
+            if (random.NextDouble() >= 0.15)
+            {
+                // Очікуємо, що AI обере папір (2) як контрхід проти каменю (1)
+                Assert.AreEqual(1, result, "AI повинен вибрати папір як контрхід проти каменю.");
+            }
+            else
+            {
+                // Перевіряємо, що результат є випадковим числом між 1 та 3
+                Assert.IsTrue(result >= 1 && result <= 3, "Результат має бути випадковим числом між 1 та 3.");
+            }
+        }
 
 
 

@@ -1006,3 +1006,51 @@ Pass: panel2 is visible.
 Pass: button2 is visible.
 Pass: button3 is visible.
 Pass: button4 is visible.
+Test run at 13.11.2024 17:31:36
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
+Test run at 13.11.2024 17:33:48
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
+Test run at 13.11.2024 17:35:22
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
+Test run at 13.11.2024 17:55:26
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
