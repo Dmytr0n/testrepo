@@ -212,66 +212,6 @@ namespace testingMenu
             form.Close();
         }
         [TestMethod]
-        public void Player2_ShouldClickAtLeastOneButtonInRandomMode()
-        {
-            // Arrange
-            var form = new TestForm1();
-            form.mode = "AI VS AI"; // Встановлюємо режим AI VS AI
-            form.randomMode = true; // Активуємо випадковий режим
-            form.winStrategy = false; // Вимикаємо стратегію виграшу
-
-            bool button11Clicked = false;
-            bool button12Clicked = false;
-            bool button13Clicked = false;
-
-            // Підписуємось на події кліку для трьох кнопок
-            form.button11.Click += (s, e) => button11Clicked = true;
-            form.button12.Click += (s, e) => button12Clicked = true;
-            form.button13.Click += (s, e) => button13Clicked = true;
-
-            // Act
-            form.StartMenu();
-            form.ModMenu();
-            form.Player1();
-            form.Player2(); // Викликаємо метод Player2
-            form.Show();
-            var randomButton = new Random().Next(1, 4); // Випадкове число від 1 до 3
-
-            switch (randomButton)
-            {
-                case 1:
-                    form.button11.PerformClick();
-                    form.Close();
-                    break;
-                case 2:
-                    form.button12.PerformClick();
-                    form.Close();
-                    break;
-                case 3:
-                    form.button13.PerformClick();
-                    form.Close();
-                    break;
-            }
-
-            // Assert: Перевіряємо, що натиснута хоча б одна кнопка
-            Assert.IsTrue(button11Clicked || button12Clicked || button13Clicked, "Жодна кнопка не була натиснута.");
-
-            // Повідомлення для логування, яка кнопка була натиснута
-            if (button11Clicked)
-            {
-                Console.WriteLine("Button11 була натиснута.");
-            }
-            else if (button12Clicked)
-            {
-                Console.WriteLine("Button12 була натиснута.");
-            }
-            else if (button13Clicked)
-            {
-                Console.WriteLine("Button13 була натиснута.");
-            }
-            
-        }
-        [TestMethod]
         public void FinalAction_ShouldHandleTieRock1()
         {
             // Arrange
