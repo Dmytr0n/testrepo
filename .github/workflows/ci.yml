@@ -9,7 +9,7 @@ on:
       - '*'
 
 jobs:
-  build:
+  client-build:
     runs-on: windows-latest
 
     steps:
@@ -28,33 +28,23 @@ jobs:
     - name: Build project
       run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
 
+    - name: Run tests and save results as .trx
+      run: |
+        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
+    
+    - name: Upload test results as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: D:\a\testrepo\testrepo\TestResults\
+    
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: game-client-artifacts
         path: D:/a/testrepo/testrepo/ci/bin
 
-  test:
-    runs-on: windows-latest
-    needs: build  # Ensures tests run after the build job is complete
-
-    steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: game-client-artifacts
-        path: client/  # Adjust path as needed
-
-    - name: Run tests and save results as .trx
-      run: |
-        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
-
-    - name: Upload test results as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: D:\a\testrepo\testrepo\TestResults\
-
+     # Arduino build job
   arduino-build:
     runs-on: ubuntu-latest
 
@@ -78,8 +68,10 @@ jobs:
 
     - name: Compile Arduino code
       run: |
-        arduino-cli compile --fqbn arduino:avr:uno server/server.ino --output-dir ./build
-
+            arduino-cli compile --fqbn arduino:avr:uno server/server.ino --output-dir ./build
+    - name: Upload to Arduino
+      run: |
+            arduino-cli board list
     - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
       with:
