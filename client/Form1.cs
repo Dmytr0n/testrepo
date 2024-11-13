@@ -16,15 +16,15 @@ namespace game_client
         private SoundPlayer _player = new SoundPlayer();
         private int select1User;
         private int select2User;
-        private bool winStrategy;
-        private bool randomMode;
+        public bool winStrategy;
+        public bool randomMode;
         private bool musicOn;
         public string mode;
         private bool onLoad;
         private int score1;
         private int score2;
         private SerialPort serialPort = new SerialPort();
-        private List<int> player1Moves = new List<int>();
+        public List<int> player1Moves = new List<int>();
         public Timer clickTimer;
         public Random random = new Random();
         public Form1()
@@ -165,7 +165,7 @@ namespace game_client
 
         }
         //функція яка відкриває вибір камінь або ножниці або бумагу користувачу 2
-        private void Player2()
+        public void Player2()
         {
             panel8.Visible = true;
             if (mode == "Man VS AI" || mode == "AI VS AI" && randomMode == true)
@@ -234,7 +234,7 @@ namespace game_client
             }
         }
         // Метод для визначення найбільш частого ходу гравця 1 і вибору контрходу
-        private int GetCounterMove()
+        public int GetCounterMove()
         {
             // Підрахунок частот ходів із вагами
             Dictionary<int, double> moveWeights = new Dictionary<int, double> { { 1, 0 }, { 2, 0 }, { 3, 0 } };
@@ -358,7 +358,7 @@ namespace game_client
             }
         }
         // вибір фінально екран (нічия, виграв 1 гравець, виграв 2 гравеець)
-        private void FinalAction(string response, string counter1, string counter2)
+        public void FinalAction(string response, string counter1, string counter2)
         {
             // нічийні варіанті
            

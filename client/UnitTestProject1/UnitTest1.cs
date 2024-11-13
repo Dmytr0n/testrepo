@@ -2,6 +2,8 @@
 using game_client;
 using System;
 using System.IO;
+using Moq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -67,6 +69,7 @@ namespace testingMenu
                 mainForm.Close();
             }
         }
+        // клас для тестування функцій button 3 та Player1()
         private class TestForm1 : Form1
         {
             public bool IsPlayer1Called { get; private set; }
@@ -208,6 +211,143 @@ namespace testingMenu
             Assert.IsTrue(button5Clicked || button6Clicked || button7Clicked, "Жодна кнопка не була натиснута.");
             form.Close();
         }
+        [TestMethod]
+        public void Player2_ShouldClickAtLeastOneButtonInRandomMode()
+        {
+            // Arrange
+            var form = new TestForm1();
+            form.mode = "AI VS AI"; // Встановлюємо режим AI VS AI
+            form.randomMode = true; // Активуємо випадковий режим
+            form.winStrategy = false; // Вимикаємо стратегію виграшу
+
+            bool button11Clicked = false;
+            bool button12Clicked = false;
+            bool button13Clicked = false;
+
+            // Підписуємось на події кліку для трьох кнопок
+            form.button11.Click += (s, e) => button11Clicked = true;
+            form.button12.Click += (s, e) => button12Clicked = true;
+            form.button13.Click += (s, e) => button13Clicked = true;
+
+            // Act
+            form.StartMenu();
+            form.ModMenu();
+            form.Player1();
+            form.Player2(); // Викликаємо метод Player2
+            form.Show();
+            var randomButton = new Random().Next(1, 4); // Випадкове число від 1 до 3
+
+            switch (randomButton)
+            {
+                case 1:
+                    form.button11.PerformClick();
+                    form.Close();
+                    break;
+                case 2:
+                    form.button12.PerformClick();
+                    form.Close();
+                    break;
+                case 3:
+                    form.button13.PerformClick();
+                    form.Close();
+                    break;
+            }
+
+            // Assert: Перевіряємо, що натиснута хоча б одна кнопка
+            Assert.IsTrue(button11Clicked || button12Clicked || button13Clicked, "Жодна кнопка не була натиснута.");
+
+            // Повідомлення для логування, яка кнопка була натиснута
+            if (button11Clicked)
+            {
+                Console.WriteLine("Button11 була натиснута.");
+            }
+            else if (button12Clicked)
+            {
+                Console.WriteLine("Button12 була натиснута.");
+            }
+            else if (button13Clicked)
+            {
+                Console.WriteLine("Button13 була натиснута.");
+            }
+            
+        }
+        [TestMethod]
+        public void FinalAction_ShouldHandleTieRock1()
+        {
+            // Arrange
+            var form = new TestForm1();
+            form.mode = "AI VS AI"; // Set the game mode
+            string response = "It's a tie. Player1 and Player2 select rock";
+            string counter1 = "Player1 Wins: 10";
+            string counter2 = "Player2 Wins: 10";
+
+            // Mock controls and their initial state
+            form.pictureBox13 = new PictureBox();  // Mock PictureBox for Player1
+            form.pictureBox14 = new PictureBox();  // Mock PictureBox for Player2
+            form.label9 = new Label();  // Mock Label for tie message
+            form.label16 = new Label();  // Mock Label for win message
+            form.panel13 = new Panel();  // Mock panel for visibility
+
+            // Act
+            form.FinalAction(response, counter1, counter2);
+
+            // Assert
+            Assert.IsTrue(form.label9.Visible, "Label9 should be visible for tie message.");
+            Assert.AreEqual("It's a tie!", form.label9.Text, "Label9 text should be 'It's a tie!'");
+            Assert.IsTrue(form.pictureBox13.Image != null, "PictureBox13 should have an image for Player1.");
+            Assert.IsTrue(form.pictureBox14.Image != null, "PictureBox14 should have an image for Player2.");
+            Assert.IsTrue(form.panel13.Visible, "Panel13 should be visible for tie result.");
+        }
+
+        [TestMethod]
+        public void FinalAction_ShouldHandleWinPlayer1f()
+        {
+            // Arrange
+            var form = new TestForm1();
+            form.mode = "AI VS AI"; // Set the game mode
+            string response = "Player1 Win!. Player1 select rock and Player2 select scissors";
+            string counter1 = "Player1 Wins: 10";
+            string counter2 = "Player2 Wins: 100";
+
+            // Mock controls and their initial state
+            form.pictureBox13 = new PictureBox();  // Mock PictureBox for Player1
+            form.pictureBox14 = new PictureBox();  // Mock PictureBox for Player2
+            form.label9 = new Label();  // Mock Label for tie message
+            form.label16 = new Label();  // Mock Label for win message
+            form.panel13 = new Panel();  // Mock panel for visibility
+
+            // Act
+            form.FinalAction(response, counter1, counter2);
+
+            // Assert
+            Assert.IsFalse(form.label9.Visible, "Label9 should not be visible for win message.");
+            Assert.IsTrue(form.label16.Visible, "Label16 should be visible for win message.");
+            Assert.AreEqual("Player 1 win!", form.label16.Text, "Label16 text should be 'Player 1 win!'");
+            Assert.IsTrue(form.pictureBox13.Image != null, "PictureBox13 should have an image for Player1.");
+            Assert.IsTrue(form.pictureBox14.Image != null, "PictureBox14 should have an image for Player2.");
+            Assert.IsTrue(form.panel13.Visible, "Panel13 should be visible for win result.");
+        }
+
+        [TestMethod]
+        public void FinalAction_ShouldHandleCounterValues()
+        {
+            // Arrange
+            var form = new TestForm1();
+            form.mode = "AI VS AI"; // Set the game mode
+            string response = "Player1 Win!. Player1 select rock and Player2 select scissors";
+            string counter1 = "Player1 Wins: 20";
+            string counter2 = "Player2 Wins: 30";
+
+            // Act
+            form.FinalAction(response, counter1, counter2);
+
+            // Assert
+            Assert.AreEqual("20", form.textBox1.Text, "TextBox1 should display the correct counter value.");
+            Assert.AreEqual("30", form.textBox2.Text, "TextBox2 should display the correct counter value.");
+        }
+
+
+
 
     }
 }
