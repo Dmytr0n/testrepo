@@ -72,7 +72,7 @@ jobs:
 
     - name: Upload to Arduino
       run: |
-            arduino-cli upload --fqbn arduino:avr:uno --port COM5 --input-dir ./build
+            arduino-cli board list
 
     - name: Upload Arduino build artifacts
       uses: actions/upload-artifact@v3
