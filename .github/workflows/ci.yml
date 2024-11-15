@@ -26,13 +26,13 @@ jobs:
       run: nuget restore client/gameclient.sln
 
     - name: Build project
-      run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=D:/a/testrepo/testrepo/ci/bin
+      run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=./ci/bin
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: game-client-artifacts
-        path: D:/a/testrepo/testrepo/ci/bin
+        path: ./ci/bin
 
   client-test:
     runs-on: windows-latest
