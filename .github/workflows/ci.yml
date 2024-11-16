@@ -52,7 +52,9 @@ jobs:
 
     - name: Build project for testing
       run: msbuild client/gameclient.sln /p:Configuration=Debug
-
+    
+    - name: Copy folder
+      run: xcopy /E /I ./media/img ./bin
     - name: Run tests and save results as .trx
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
