@@ -33,22 +33,6 @@ if not exist "%rootDir%\deploy\client_test" (
     echo Folder 'client_test' already exists in 'deploy'.
 )
 
-if exist "%destinationFolder%" (
-    echo Destination folder exists. Deleting...
-    rmdir /S /Q "%destinationFolder%"
-    echo Destination folder deleted.
-)
-
-set sourceFolder=%cd%\media\img
-set destinationFolder=%cd%\deploy\client\img
-
-if exist "%sourceFolder%" (
-    xcopy "%sourceFolder%" "%destinationFolder%" /E /I
-    echo Folder copied successfully!
-) else (
-    echo Source folder not found!
-)
-
 set clientArtifactZipPath=C:\rps_project\client_build_artifacts.zip
 set clientTestArtifactZipPath=C:\rps_project\client_test_artifacts.zip
 set serverArtifactZipPath=C:\rps_project\server_build_artifacts.zip
@@ -143,17 +127,38 @@ if %errorlevel% neq 0 (
 
 REM Step 4: Check if Visual Studio Build Tools are installed
 echo Step 4: Checking for Visual Studio Build Tools...
-set vsInstallationPath=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\bin
-if not exist "%vsInstallationPath%" (
-    echo Error: Visual Studio Build Tools not found. Please install them.
-    set step4Status=FAILED
-    goto FinalReport
+
+REM Check if running in GitHub Actions
+if defined GITHUB_ACTIONS (
+    echo Running in GitHub Actions...
+    REM Check for VS Build Tools using a relative or system-wide path
+    where MSBuild >nul 2>nul
+    if errorlevel 1 (
+        echo Error: Visual Studio Build Tools not found in GitHub Actions. Please install them.
+        set step4Status=FAILED
+        goto FinalReport
+    ) else (
+        echo Visual Studio Build Tools found in GitHub Actions.
+        set step4Status=PASSED
+        echo Step 4 completed successfully. [PASSED]
+    )
 ) else (
-    echo Visual Studio Build Tools found.
-    set step4Status=PASSED
-    echo Step 4 completed successfully. [PASSED]
+    echo Running locally...
+    REM Check for VS Build Tools locally using absolute path
+    set vsInstallationPath=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\bin
+    if not exist "%vsInstallationPath%" (
+        echo Error: Visual Studio Build Tools not found. Please install them.
+        set step4Status=FAILED
+        goto FinalReport
+    ) else (
+        echo Visual Studio Build Tools found locally.
+        set step4Status=PASSED
+        echo Step 4 completed successfully. [PASSED]
+    )
 )
 
+:FinalReport
+REM Your final report logic here
 
 REM Step 5: Build the client project
 echo Step 5: Building the client project...
