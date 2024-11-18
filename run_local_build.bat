@@ -181,7 +181,7 @@ if %errorlevel% neq 0 (
 
 REM Step 7: Run client tests
 echo Step 7: Running client tests...
-dotnet test C:\rps_project\client\UnitTestProject1\bin\Debug\UnitTestProject1.dll --logger "trx;LogFileName=%clientTestResultFile%"
+dotnet test client\UnitTestProject1\bin\Debug\UnitTestProject1.dll --logger "trx;LogFileName=%clientTestResultFile%"
 if %errorlevel% neq 0 (
     echo Client tests failed.
     set step7Status=FAILED
