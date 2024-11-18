@@ -52,7 +52,12 @@ jobs:
 
     - name: Build project for testing
       run: msbuild client/gameclient.sln /p:Configuration=Debug
-
+    
+    
+    - name: Copy folder
+      run: |
+            cmd.exe /c xcopy /E /I .\media\img .\client\UnitTestProject1\bin\Debug\img  
+            
     - name: Run tests and save results as .trx
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
@@ -93,6 +98,16 @@ jobs:
       with:
         name: arduino-build
         path: ./build
+
+  run-script:
+      runs-on: windows-latest
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run CMD script
+        shell: cmd
+        run: .\run_local_build.bat
 
 
         
