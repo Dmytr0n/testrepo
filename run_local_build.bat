@@ -143,22 +143,21 @@ if defined GITHUB_ACTIONS (
         echo Step 4 completed successfully. [PASSED]
     )
 ) else (
-    echo Running locally...
-    REM Check for VS Build Tools locally using absolute path
-    set vsInstallationPath=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\bin
-    if not exist "%vsInstallationPath%" (
-        echo Error: Visual Studio Build Tools not found. Please install them.
-        set step4Status=FAILED
-        goto FinalReport
-    ) else (
-        echo Visual Studio Build Tools found locally.
-        set step4Status=PASSED
-        echo Step 4 completed successfully. [PASSED]
-    )
+   echo Running locally...
+   REM Check for Visual Studio Build Tools locally using absolute path
+   where MSBuild.exe >nul 2>nul
+if errorlevel 1 (
+    echo Error: Visual Studio Build Tools not found. Please install them.
+    set step4Status=FAILED
+    goto FinalReport
+) else (
+    echo Visual Studio Build Tools found.
+    set step4Status=PASSED
+    echo Step 4 completed successfully. [PASSED]
 )
 
-:FinalReport
-REM Your final report logic here
+
+)
 
 REM Step 5: Build the client project
 echo Step 5: Building the client project...
