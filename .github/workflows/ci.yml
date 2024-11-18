@@ -105,6 +105,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
+
       - name: Run CMD script
         shell: cmd
         run: .\run_local_build.bat
