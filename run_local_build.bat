@@ -59,6 +59,24 @@ if exist "%serverArtifactZipPath%" (
     echo Server build artifact not found, skipping removal.
 )
 
+set sourceFolder=%cd%\media\img
+set destinationFolder=%cd%\deploy\client\img
+
+REM Перевірка, чи існує папка в цільовому місці
+if exist "%destinationFolder%" (
+    echo Destination folder exists. Deleting...
+    rmdir /S /Q "%destinationFolder%"
+    echo Destination folder deleted.
+)
+
+REM Копіювання папки
+if exist "%sourceFolder%" (
+    xcopy "%sourceFolder%" "%destinationFolder%" /E /I
+    echo Folder copied successfully!
+) else (
+    echo Source folder not found!
+)
+
 echo All necessary artifact checks and removals completed.
 
 REM Initialize variables for the status table
@@ -181,7 +199,7 @@ if %errorlevel% neq 0 (
 
 REM Step 7: Run client tests
 echo Step 7: Running client tests...
-dotnet test client\UnitTestProject1\bin\Debug\UnitTestProject1.dll --logger "trx;LogFileName=%clientTestResultFile%"
+dotnet test deploy\client\UnitTestProject1.dll --logger "trx;LogFileName=%clientTestResultFile%"
 if %errorlevel% neq 0 (
     echo Client tests failed.
     set step7Status=FAILED
