@@ -116,8 +116,7 @@ jobs:
       - name: Run CMD script
         shell: cmd
         run: |
-          set COM_PORT=COM11
-          .\run_local_build.bat %COM_PORT%
+          .\run_local_build.bat COM11
 
 
 
