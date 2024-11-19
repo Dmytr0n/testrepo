@@ -33,9 +33,16 @@ if not exist "%rootDir%\deploy\client_test" (
     echo Folder 'client_test' already exists in 'deploy'.
 )
 
-set clientArtifactZipPath=%~dp0\client_build_artifacts.zip
-set clientTestArtifactZipPath=%~dp0\client_test_artifacts.zip
-set serverArtifactZipPath=%~dp0\server_build_artifacts.zip
+if not exist "%rootDir%\artefacts" (
+    mkdir "%rootDir%\artefacts"
+    echo Folder 'deploy' created.
+) else (
+    echo Folder 'deploy' already exists.
+)
+
+set clientArtifactZipPath=%~dp0\artefacts\client_build_artifacts.zip
+set clientTestArtifactZipPath=%~dp0\artefacts\client_test_artifacts.zip
+set serverArtifactZipPath=%~dp0\artefacts\server_build_artifacts.zip
 
 echo Checking for existing artifacts to remove...
 if exist "%clientArtifactZipPath%" (
@@ -103,15 +110,15 @@ set projectFolder=%cd%
 set clientBuildOutput=%projectFolder%\deploy\client
 set clientTestResultsPath=%projectFolder%\deploy\client_test
 set clientTestResultFile=%clientTestResultsPath%\test_results.trx
-set clientArtifactZipPath=%projectFolder%\client_build_artifacts.zip
-set clientTestArtifactZipPath=%projectFolder%\client_test_artifacts.zip
+set clientArtifactZipPath=%projectFolder%\artefacts\client_build_artifacts.zip
+set clientTestArtifactZipPath=%projectFolder%\artefacts\client_test_artifacts.zip
 
 set arduinoSketchFolder=%projectFolder%\server
 set arduinoBoard=arduino:avr:uno
 set arduinoPort=
 set baudRate=
 set serverOutputFolder=%projectFolder%\deploy\server
-set serverArtifactZipPath=%projectFolder%\server_build_artifacts.zip
+set serverArtifactZipPath=%projectFolder%\artefacts\server_build_artifacts.zip
 
 
 REM CLIENT SECTION
@@ -320,14 +327,28 @@ if defined GITHUB_ACTIONS (
     echo Baud rate entered locally: %baudRate%
 )
 
-REM Check if the entered port exists (validate by checking if COM port is available)
+REM Validate COM port and baud rate
 echo Trying to connect to %arduinoPort% at baud rate %baudRate%...
+
+REM Check if baud rate is 9600
+if not "%baudRate%"=="9600" (
+    echo Error: Unsupported baud rate %baudRate%. Only 9600 is allowed.
+    set step13Status=FAILED
+    goto FinalReport
+)
+
+REM Check if the entered port exists (validate by checking if COM port is available)
 mode %arduinoPort% >nul 2>&1
 if %errorlevel% neq 0 (
     echo Error: Failed to connect to %arduinoPort%. The port may not exist or be available.
     set step13Status=FAILED
     goto FinalReport
 )
+
+REM If all checks pass
+echo COM port %arduinoPort% connected successfully at baud rate %baudRate%.
+set step13Status=PASSED
+echo Step 13 completed successfully. [PASSED]
 
 echo COM port %arduinoPort% connected successfully.
 set step13Status=PASSED
@@ -444,7 +465,7 @@ echo ---------------------------------------------------------
 echo All tasks completed successfully on %date% at %time%
 echo ---------------------------------------------------------
 
-set indexHtmlFile=%rootDir%\index.html
+set indexHtmlFile=%rootDir%\artefacts\index.html
 
 echo Creating final report table in %indexHtmlFile%...
 
