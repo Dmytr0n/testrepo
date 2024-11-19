@@ -298,12 +298,26 @@ if %errorlevel% neq 0 (
     echo Step 12 completed successfully. [PASSED]
 )
 
-REM Step 13: Request COM port from user
-echo Step 13: Requesting Arduino COM port from user...
-set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5): 
-set arduinoPort=%arduinoPort:\\.\=%
+REM Step 13: Request COM port from user (for local execution) or use provided COM port (for GitHub Actions)
+echo Step 13: Checking for COM port...
+
+REM Check if running in GitHub Actions
+if defined GITHUB_ACTIONS (
+    echo Running in GitHub Actions...
+    REM Use the COM port passed as an environment variable (e.g., COM_PORT)
+    set arduinoPort=%COM_PORT%
+    echo COM port in GitHub Actions: %arduinoPort%
+) else (
+    echo Running locally...
+    REM Request COM port from user locally
+    set /p arduinoPort=Enter the COM port for your Arduino "(e.g., COM5)"  
+    REM Remove any extra path information (e.g., '\\.\')
+    set arduinoPort=%arduinoPort:\\.\=%  
+    echo COM port entered locally: %arduinoPort%
+)
 
 REM Check if the entered port exists (validate by checking if COM port is available)
+echo Trying to connect to %arduinoPort%...
 mode %arduinoPort% >nul 2>&1
 if %errorlevel% neq 0 (
     echo Error: Failed to connect to %arduinoPort%. The port may not exist or be available.
