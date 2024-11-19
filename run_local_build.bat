@@ -302,6 +302,14 @@ if %errorlevel% neq 0 (
 REM Step 13: Request COM port from user (for local execution) or use provided COM port (for GitHub Actions)
 echo Step 13: Checking for COM port...
 REM Check if running in GitHub Actions
+if defined GITHUB_ACTIONS (
+    echo Running in GitHub Actions...
+    REM Use the COM port and baud rate passed as environment variables (e.g., COM_PORT and BAUD_RATE)
+    set "arduinoPort=%1"
+    set "baudRate=%2"
+    echo COM port passed: %arduinoPort%
+    echo Baud rate passed: %baudRate%
+) else (
     echo Running locally...
     REM Request COM port and baud rate from user locally
     set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5)  
