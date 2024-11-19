@@ -305,8 +305,8 @@ REM Check if running in GitHub Actions
 if defined GITHUB_ACTIONS (
     echo Running in GitHub Actions...
     REM Use the COM port passed as an environment variable (e.g., COM_PORT)
-    set arduinoPort=%COM_PORT%
-    echo COM port in GitHub Actions: %arduinoPort%
+    set "arduinoPort=%1"
+    echo COM port passed: %arduinoPort%
 ) else (
     echo Running locally...
     REM Request COM port from user locally
