@@ -306,8 +306,25 @@ if %errorlevel% neq 0 (
     echo Step 12 completed successfully. [PASSED]
 )
 
-REM Step 13: Request COM port from user (for local execution) or use provided COM port (for GitHub Actions)
-echo Step 13: Checking for COM port...
+REM Step 13: Archive server build artifacts
+echo Step 13: Creating server build artifact archive...
+
+REM Create archive using PowerShell
+powershell -Command "Compress-Archive -Path %serverOutputFolder% -DestinationPath %serverArtifactZipPath%"
+
+REM Check if archiving was successful
+if %errorlevel% neq 0 (
+    echo Error: Failed to create server build artifact archive.
+    set step13Status=FAILED
+    goto FinalReport
+) else (
+    echo Server build artifacts saved at: %serverArtifactZipPath%.
+    set step13Status=PASSED
+    echo Step 13 completed successfully. [PASSED]
+)
+
+REM Step 14: Request COM port from user (for local execution) or use provided COM port (for GitHub Actions)
+echo Step 14: Checking for COM port...
 REM Check if running in GitHub Actions
 if defined GITHUB_ACTIONS (
     echo Running in GitHub Actions...
@@ -319,13 +336,16 @@ if defined GITHUB_ACTIONS (
 ) else (
     echo Running locally...
     REM Request COM port and baud rate from user locally
-    set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5)  
-    set /p baudRate=Enter the baud rate for your Arduino (e.g., 9600) 
     REM Remove any extra path information (e.g., '\\.\')
-    set arduinoPort=%arduinoPort:\\.\=%  
-    echo COM port entered locally: %arduinoPort%
-    echo Baud rate entered locally: %baudRate%
+    goto Input
 )
+
+:Input
+set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5): 
+set /p baudRate=Enter the baud rate for your Arduino (e.g., 9600): 
+set arduinoPort=%arduinoPort:\\.\=%  
+echo COM port entered locally: %arduinoPort%
+echo Baud rate entered locally: %baudRate%
 
 REM Validate COM port and baud rate
 echo Trying to connect to %arduinoPort% at baud rate %baudRate%...
@@ -333,7 +353,7 @@ echo Trying to connect to %arduinoPort% at baud rate %baudRate%...
 REM Check if baud rate is 9600
 if not "%baudRate%"=="9600" (
     echo Error: Unsupported baud rate %baudRate%. Only 9600 is allowed.
-    set step13Status=FAILED
+    set step14Status=FAILED
     goto FinalReport
 )
 
@@ -341,51 +361,29 @@ REM Check if the entered port exists (validate by checking if COM port is availa
 mode %arduinoPort% >nul 2>&1
 if %errorlevel% neq 0 (
     echo Error: Failed to connect to %arduinoPort%. The port may not exist or be available.
-    set step13Status=FAILED
+    set step14Status=FAILED
     goto FinalReport
 )
 
 REM If all checks pass
 echo COM port %arduinoPort% connected successfully at baud rate %baudRate%.
-set step13Status=PASSED
-echo Step 13 completed successfully. [PASSED]
+set step14Status=PASSED
+echo Step 14 completed successfully. [PASSED]
 
-echo COM port %arduinoPort% connected successfully.
-set step13Status=PASSED
-echo Step 13 completed successfully. [PASSED]
-
-REM Step 14: Upload firmware to Arduino board
-echo Step 14: Uploading firmware to Arduino board...
+REM Step 15: Upload firmware to Arduino board
+echo Step 15: Uploading firmware to Arduino board...
 arduino-cli upload -p "%arduinoPort%" -b arduino:avr:uno --input-dir %serverOutputFolder%
 
 REM Check if the upload was successful
 if %errorlevel% neq 0 (
     echo Error: Failed to upload firmware to Arduino on port %arduinoPort%.
-    set step14Status=FAILED
-    goto FinalReport
-) else (
-    echo Firmware uploaded successfully to "%arduinoPort%".
-    set step14Status=PASSED
-    echo Step 14 completed successfully. [PASSED]
-)
-
-REM Step 15: Archive server build artifacts
-echo Step 15: Creating server build artifact archive...
-
-REM Create archive using PowerShell
-powershell -Command "Compress-Archive -Path %serverOutputFolder% -DestinationPath %serverArtifactZipPath%"
-
-REM Check if archiving was successful
-if %errorlevel% neq 0 (
-    echo Error: Failed to create server build artifact archive.
     set step15Status=FAILED
     goto FinalReport
 ) else (
-    echo Server build artifacts saved at: %serverArtifactZipPath%.
+    echo Firmware uploaded successfully to "%arduinoPort%".
     set step15Status=PASSED
     echo Step 15 completed successfully. [PASSED]
 )
-
 
 REM Server report
 echo.
@@ -455,15 +453,16 @@ echo  11    Install board definitions            %step11Status%
 echo =========================================================
 echo  12    Compile Arduino sketch               %step12Status%
 echo =========================================================
-echo  13    Request COM port and baud rate       %step13Status%
+echo  13    Archive server build artifacts       %step13Status%
 echo =========================================================
-echo  14    Upload firmware to Arduino           %step14Status%
+echo  14    Request COM port and baud rate       %step14Status%
 echo =========================================================
-echo  15    Archive server build artifacts       %step15Status%
+echo  15    Upload firmware to Arduino           %step15Status%
 echo =========================================================
 echo ---------------------------------------------------------
 echo All tasks completed successfully on %date% at %time%
 echo ---------------------------------------------------------
+
 
 set indexHtmlFile=%rootDir%\artefacts\index.html
 
@@ -471,35 +470,37 @@ echo Creating final report table in %indexHtmlFile%...
 
 (
     echo ^<html^>
-    echo ^<head^>
-    echo ^<title^>Build and Test Report^</title^>
-    echo ^</head^>
-    echo ^<body^>
-    echo ^<h1^>Build and Test Report^</h1^>
+echo ^<head^>
+echo ^<title^>Build and Test Report^</title^>
+echo ^</head^>
+echo ^<body^>
+echo ^<h1^>Build and Test Report^</h1^>
 
-    REM Таблиця для звіту по кроках
-    echo ^<h2^>Step Report^</h2^>
-    echo ^<table border="1" cellpadding="5" cellspacing="0"^>
-    echo ^<tr^>^<th^>Step^</th^>^<th^>Description^</th^>^<th^>Status^</th^>^</tr^>
-    
-    echo ^<tr^>^<td^>1^</td^>^<td^>Set up folder structure^</td^>^<td^>%step1Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>2^</td^>^<td^>Check and build client project^</td^>^<td^>%step2Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>3^</td^>^<td^>Restore NuGet packages^</td^>^<td^>%step3Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>4^</td^>^<td^>Check Visual Studio Build Tools^</td^>^<td^>%step4Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>5^</td^>^<td^>Build client project^</td^>^<td^>%step5Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>6^</td^>^<td^>Archive client build artifacts^</td^>^<td^>%step6Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>7^</td^>^<td^>Run client tests^</td^>^<td^>%step7Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>8^</td^>^<td^>Check test results^</td^>^<td^>%step8Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>9^</td^>^<td^>Archive client test artifacts^</td^>^<td^>%step9Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>10^</td^>^<td^>Verify Arduino CLI installation^</td^>^<td^>%step10Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>11^</td^>^<td^>Install board definitions^</td^>^<td^>%step11Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>12^</td^>^<td^>Compile Arduino sketch^</td^>^<td^>%step12Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>13^</td^>^<td^>Request COM port and baud rate^</td^>^<td^>%step13Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>14^</td^>^<td^>Upload firmware to Arduino^</td^>^<td^>%step14Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>15^</td^>^<td^>Archive server build artifacts^</td^>^<td^>%step15Status%^</td^>^</tr^>
-    
-    echo ^</table^>
-    
+REM Таблиця для звіту по кроках
+echo ^<h2^>Step Report^</h2^>
+echo ^<table border="1" cellpadding="5" cellspacing="0"^>
+echo ^<tr^>^<th^>Step^</th^>^<th^>Description^</th^>^<th^>Status^</th^>^</tr^>
+
+echo ^<tr^>^<td^>1^</td^>^<td^>Set up folder structure^</td^>^<td^>%step1Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>2^</td^>^<td^>Check and build client project^</td^>^<td^>%step2Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>3^</td^>^<td^>Restore NuGet packages^</td^>^<td^>%step3Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>4^</td^>^<td^>Check Visual Studio Build Tools^</td^>^<td^>%step4Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>5^</td^>^<td^>Build client project^</td^>^<td^>%step5Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>6^</td^>^<td^>Archive client build artifacts^</td^>^<td^>%step6Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>7^</td^>^<td^>Run client tests^</td^>^<td^>%step7Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>8^</td^>^<td^>Check test results^</td^>^<td^>%step8Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>9^</td^>^<td^>Archive client test artifacts^</td^>^<td^>%step9Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>10^</td^>^<td^>Verify Arduino CLI installation^</td^>^<td^>%step10Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>11^</td^>^<td^>Install board definitions^</td^>^<td^>%step11Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>12^</td^>^<td^>Compile Arduino sketch^</td^>^<td^>%step12Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>13^</td^>^<td^>Archive server build artifacts^</td^>^<td^>%step13Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>14^</td^>^<td^>Request COM port and baud rate^</td^>^<td^>%step14Status%^</td^>^</tr^>
+echo ^<tr^>^<td^>15^</td^>^<td^>Upload firmware to Arduino^</td^>^<td^>%step15Status%^</td^>^</tr^>
+
+echo ^</table^>
+echo ^</body^>
+echo ^</html^>
+
     echo ^<h2^>Final Report^</h2^>
 echo ^<table border="1" cellpadding="5" cellspacing="0"^>
 echo ^<tr^>^<th^>Section^</th^>^<th^>Details^</th^>^</tr^>
