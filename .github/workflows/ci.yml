@@ -119,7 +119,7 @@ jobs:
       
       - name: Run CMD script
         shell: cmd
-        run: .\run_local_build.bat
+        run: .\run_local_build.bat %COM_PORT%
 
 
         
