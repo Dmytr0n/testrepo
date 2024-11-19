@@ -113,9 +113,6 @@ jobs:
         with:
           version: 0.33.1
       
-      - name: Set COM_PORT environment variable for CMD
-        run: echo "COM_PORT=COM11" >> $GITHUB_ENV
-
       - name: Run CMD script
         shell: cmd
         run: |
