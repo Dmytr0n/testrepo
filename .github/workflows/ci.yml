@@ -114,7 +114,7 @@ jobs:
           version: 0.33.1
       
       - name: Set ARDUINO_COM_PORT environment variable
-        run: echo "ARDUINO_COM_PORT=COM5" >> $GITHUB_ENV
+        run: echo "ARDUINO_COM_PORT=COM3" >> $GITHUB_ENV
       
       - name: Run CMD script
         shell: cmd
