@@ -116,7 +116,7 @@ jobs:
       - name: Run CMD script
         shell: cmd
         run: |
-          .\run_local_build.bat COM11
+          .\run_local_build.bat COM5 9600
 
 
 
