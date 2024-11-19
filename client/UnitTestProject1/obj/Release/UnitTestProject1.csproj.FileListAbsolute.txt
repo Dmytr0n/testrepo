@@ -1,0 +1,11 @@
+D:\GitHub\testrepo\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\GitHub\testrepo\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\GitHub\testrepo\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\GitHub\testrepo\deploy\client\UnitTestProject1.dll.config
+D:\GitHub\testrepo\deploy\client\UnitTestProject1.dll
+D:\GitHub\testrepo\deploy\client\UnitTestProject1.pdb
+D:\GitHub\testrepo\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.AssemblyReference.cache
+D:\GitHub\testrepo\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CoreCompileInputs.cache
+D:\GitHub\testrepo\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CopyComplete
+D:\GitHub\testrepo\client\UnitTestProject1\obj\Release\UnitTestProject1.dll
+D:\GitHub\testrepo\client\UnitTestProject1\obj\Release\UnitTestProject1.pdb

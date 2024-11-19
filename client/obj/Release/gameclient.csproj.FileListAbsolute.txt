@@ -1,0 +1,15 @@
+D:\GitHub\testrepo\deploy\client\game client.exe.config
+D:\GitHub\testrepo\deploy\client\game client.exe
+D:\GitHub\testrepo\deploy\client\game client.pdb
+D:\GitHub\testrepo\client\obj\Release\gameclient.csproj.AssemblyReference.cache
+D:\GitHub\testrepo\client\obj\Release\game client.exe.config
+D:\GitHub\testrepo\client\obj\Release\game_client.Form1.resources
+D:\GitHub\testrepo\client\obj\Release\game_client.LoadForm.resources
+D:\GitHub\testrepo\client\obj\Release\game_client.Properties.Resources.resources
+D:\GitHub\testrepo\client\obj\Release\game_client.SaveMenu.resources
+D:\GitHub\testrepo\client\obj\Release\game_client.SettingsForm.resources
+D:\GitHub\testrepo\client\obj\Release\gameclient.csproj.GenerateResource.cache
+D:\GitHub\testrepo\client\obj\Release\gameclient.csproj.CoreCompileInputs.cache
+D:\GitHub\testrepo\client\obj\Release\gameclient.csproj.CopyComplete
+D:\GitHub\testrepo\client\obj\Release\game client.exe
+D:\GitHub\testrepo\client\obj\Release\game client.pdb

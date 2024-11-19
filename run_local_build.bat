@@ -33,9 +33,9 @@ if not exist "%rootDir%\deploy\client_test" (
     echo Folder 'client_test' already exists in 'deploy'.
 )
 
-set clientArtifactZipPath=C:\rps_project\client_build_artifacts.zip
-set clientTestArtifactZipPath=C:\rps_project\client_test_artifacts.zip
-set serverArtifactZipPath=C:\rps_project\server_build_artifacts.zip
+set clientArtifactZipPath=%~dp0\client_build_artifacts.zip
+set clientTestArtifactZipPath=%~dp0\client_test_artifacts.zip
+set serverArtifactZipPath=%~dp0\server_build_artifacts.zip
 
 echo Checking for existing artifacts to remove...
 if exist "%clientArtifactZipPath%" (
@@ -109,6 +109,7 @@ set clientTestArtifactZipPath=%projectFolder%\client_test_artifacts.zip
 set arduinoSketchFolder=%projectFolder%\server
 set arduinoBoard=arduino:avr:uno
 set arduinoPort=
+set baudRate=
 set serverOutputFolder=%projectFolder%\deploy\server
 set serverArtifactZipPath=%projectFolder%\server_build_artifacts.zip
 
@@ -300,34 +301,37 @@ if %errorlevel% neq 0 (
 
 REM Step 13: Request COM port from user (for local execution) or use provided COM port (for GitHub Actions)
 echo Step 13: Checking for COM port...
-
 REM Check if running in GitHub Actions
 if defined GITHUB_ACTIONS (
     echo Running in GitHub Actions...
-    REM Use the COM port passed as an environment variable (e.g., COM_PORT)
+    REM Use the COM port and baud rate passed as environment variables (e.g., COM_PORT and BAUD_RATE)
     set "arduinoPort=%1"
+    set "baudRate=%2"
     echo COM port passed: %arduinoPort%
+    echo Baud rate passed: %baudRate%
 ) else (
     echo Running locally...
-    REM Request COM port from user locally
+    REM Request COM port and baud rate from user locally
     set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5)  
+    set /p baudRate=Enter the baud rate for your Arduino (e.g., 9600) 
     REM Remove any extra path information (e.g., '\\.\')
     set arduinoPort=%arduinoPort:\\.\=%  
     echo COM port entered locally: %arduinoPort%
+    echo Baud rate entered locally: %baudRate%
 )
 
 REM Check if the entered port exists (validate by checking if COM port is available)
-echo Trying to connect to %arduinoPort%...
+echo Trying to connect to %arduinoPort% at baud rate %baudRate%...
 mode %arduinoPort% >nul 2>&1
 if %errorlevel% neq 0 (
     echo Error: Failed to connect to %arduinoPort%. The port may not exist or be available.
     set step13Status=FAILED
     goto FinalReport
-) else (
-    echo COM port %arduinoPort% connected successfully.
-    set step13Status=PASSED
-    echo Step 13 completed successfully. [PASSED]
 )
+
+echo COM port %arduinoPort% connected successfully.
+set step13Status=PASSED
+echo Step 13 completed successfully. [PASSED]
 
 REM Step 14: Upload firmware to Arduino board
 echo Step 14: Uploading firmware to Arduino board...
@@ -370,11 +374,13 @@ echo ---------------------------
 echo Arduino Sketch Folder: "%arduinoSketchFolder%"
 echo Arduino Board: "%arduinoBoard%"
 echo Arduino Port: "%arduinoPort%"
+echo Arduino Baud Rate: "%baudRate%"
 echo Server Output Folder: "%serverOutputFolder%"
 echo Server Artifact Zip Path: "%serverArtifactZipPath%"
 echo ---------------------------
 
 :FinalReport
+
 REM FINAL REPORT
 echo.
 echo ===========================
@@ -389,11 +395,13 @@ echo SERVER SECTION:
 echo - Sketch Folder: "%arduinoSketchFolder%"
 echo - Board: %arduinoBoard%
 echo - Port: %arduinoPort%
+echo - Baud Rate: %baudRate%
 echo - Output Folder: "%serverOutputFolder%"
 echo - Server Artifact Zip: "%serverArtifactZipPath%"
 echo ===========================
 echo All tasks completed successfully on %date% at %time%
 echo ===========================
+
 REM Display the table of step statuses
 
 echo.
@@ -426,7 +434,7 @@ echo  11    Install board definitions            %step11Status%
 echo =========================================================
 echo  12    Compile Arduino sketch               %step12Status%
 echo =========================================================
-echo  13    Request COM port from user           %step13Status%
+echo  13    Request COM port and baud rate       %step13Status%
 echo =========================================================
 echo  14    Upload firmware to Arduino           %step14Status%
 echo =========================================================
@@ -465,34 +473,35 @@ echo Creating final report table in %indexHtmlFile%...
     echo ^<tr^>^<td^>10^</td^>^<td^>Verify Arduino CLI installation^</td^>^<td^>%step10Status%^</td^>^</tr^>
     echo ^<tr^>^<td^>11^</td^>^<td^>Install board definitions^</td^>^<td^>%step11Status%^</td^>^</tr^>
     echo ^<tr^>^<td^>12^</td^>^<td^>Compile Arduino sketch^</td^>^<td^>%step12Status%^</td^>^</tr^>
-    echo ^<tr^>^<td^>13^</td^>^<td^>Request COM port from user^</td^>^<td^>%step13Status%^</td^>^</tr^>
+    echo ^<tr^>^<td^>13^</td^>^<td^>Request COM port and baud rate^</td^>^<td^>%step13Status%^</td^>^</tr^>
     echo ^<tr^>^<td^>14^</td^>^<td^>Upload firmware to Arduino^</td^>^<td^>%step14Status%^</td^>^</tr^>
     echo ^<tr^>^<td^>15^</td^>^<td^>Archive server build artifacts^</td^>^<td^>%step15Status%^</td^>^</tr^>
     
     echo ^</table^>
     
     echo ^<h2^>Final Report^</h2^>
-    echo ^<table border="1" cellpadding="5" cellspacing="0"^>
-    echo ^<tr^>^<th^>Section^</th^>^<th^>Details^</th^>^</tr^>
-    echo ^<tr^>^<td^>CLIENT SECTION^</td^>^<td^>^<ul^>
-    echo ^<li^>Build Output Path: %clientBuildOutput%^</li^>
-    echo ^<li^>Test Results: %clientTestsStatus%^</li^>
-    echo ^<li^>Artifact Zip: %clientArtifactZipPath%^</li^>
-    echo ^<li^>Test Artifact Zip: %clientTestArtifactZipPath%^</li^>
-    echo ^</ul^>^</td^>^</tr^>
+echo ^<table border="1" cellpadding="5" cellspacing="0"^>
+echo ^<tr^>^<th^>Section^</th^>^<th^>Details^</th^>^</tr^>
+echo ^<tr^>^<td^>CLIENT SECTION^</td^>^<td^>^<ul^>
+echo ^<li^>Build Output Path: %clientBuildOutput%^</li^>
+echo ^<li^>Test Results: %clientTestsStatus%^</li^>
+echo ^<li^>Artifact Zip: %clientArtifactZipPath%^</li^>
+echo ^<li^>Test Artifact Zip: %clientTestArtifactZipPath%^</li^>
+echo ^</ul^>^</td^>^</tr^>
     
-    echo ^<tr^>^<td^>SERVER SECTION^</td^>^<td^>^<ul^>
-    echo ^<li^>Sketch Folder: %arduinoSketchFolder%^</li^>
-    echo ^<li^>Board: %arduinoBoard%^</li^>
-    echo ^<li^>Port: %arduinoPort%^</li^>
-    echo ^<li^>Output Folder: %serverOutputFolder%^</li^>
-    echo ^<li^>Server Artifact Zip: %serverArtifactZipPath%^</li^>
-    echo ^</ul^>^</td^>^</tr^>
+echo ^<tr^>^<td^>SERVER SECTION^</td^>^<td^>^<ul^>
+echo ^<li^>Sketch Folder: %arduinoSketchFolder%^</li^>
+echo ^<li^>Board: %arduinoBoard%^</li^>
+echo ^<li^>Port: %arduinoPort%^</li^>
+echo ^<li^>Baud Rate: %baudRate%^</li^>
+echo ^<li^>Output Folder: %serverOutputFolder%^</li^>
+echo ^<li^>Server Artifact Zip: %serverArtifactZipPath%^</li^>
+echo ^</ul^>^</td^>^</tr^>
 
-    echo ^</table^>
-    echo ^<p^>All tasks completed successfully on %date% at %time%.^</p^>
-    echo ^</body^>
-    echo ^</html^>
+echo ^</table^>
+echo ^<p^>All tasks completed successfully on %date% at %time%.^</p^>
+echo ^</body^>
+echo ^</html^>
 ) > "%indexHtmlFile%"
 
 echo HTML final report created successfully at: %indexHtmlFile%
