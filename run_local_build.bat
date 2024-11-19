@@ -108,7 +108,7 @@ set clientTestArtifactZipPath=%projectFolder%\client_test_artifacts.zip
 
 set arduinoSketchFolder=%projectFolder%\server
 set arduinoBoard=arduino:avr:uno
-set arduinoPort=COM5
+set arduinoPort=
 set serverOutputFolder=%projectFolder%\deploy\server
 set serverArtifactZipPath=%projectFolder%\server_build_artifacts.zip
 
@@ -310,7 +310,7 @@ if defined GITHUB_ACTIONS (
 ) else (
     echo Running locally...
     REM Request COM port from user locally
-    set /p arduinoPort=Enter the COM port for your Arduino "(e.g., COM5)"  
+    set /p arduinoPort=Enter the COM port for your Arduino (e.g., COM5)  
     REM Remove any extra path information (e.g., '\\.\')
     set arduinoPort=%arduinoPort:\\.\=%  
     echo COM port entered locally: %arduinoPort%
