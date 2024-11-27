@@ -20,13 +20,19 @@ jobs:
           Set-ExecutionPolicy Bypass -Scope Process -Force; 
           iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
   
-      - name: Install Doxygen and Graphviz
+      - name: Install Doxygen and Graphviz manually
         run: |
-          choco install doxygen
-          choco install graphviz
-  
-      - name: Generate Doxygen documentation
-        run: doxygen Doxyfile 
+                # Завантажуємо Doxygen для Windows (посилання на останню версію)
+                Invoke-WebRequest -Uri https://github.com/doxygen/doxygen/releases/download/1.9.5/doxygen-1.9.5.windows.x64.bin.zip -OutFile doxygen.zip
+                Expand-Archive -Path doxygen.zip -DestinationPath doxygen
+                # Додаємо doxygen в PATH
+                $env:PATH = "$env:PATH;$(pwd)\doxygen\doxygen-1.9.5\bin"
+                
+                # Завантажуємо Graphviz для Windows
+                Invoke-WebRequest -Uri https://graphviz.gitlab.io/download/windows/graphviz-2.50.0-win64.msi -OutFile graphviz-setup.msi
+                Start-Process -FilePath graphviz-setup.msi -ArgumentList '/quiet' -Wait
+                
+    
         
 
 
