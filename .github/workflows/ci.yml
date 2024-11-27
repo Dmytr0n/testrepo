@@ -15,22 +15,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Doxygen from .exe
+      - name: Install Doxygen from .exe to specific directory
         run: |
-            .\doxygen-installer.exe /quiet /install
+            .\doxygen-installer.exe /quiet /install INSTALLDIR="C:\doxygen"
 
       - name: Find Doxygen installation path
         run: |
-              # Знайдемо, де було інстальовано Doxygen
-              $doxygenPath = "C:\Program Files\doxygen\bin\doxygen.exe"
-              if (Test-Path $doxygenPath) {
+            $doxygenPath = "C:\doxygen\bin\doxygen.exe"
+            if (Test-Path $doxygenPath) {
               Write-Host "Doxygen is installed at $doxygenPath"
-              # Додаємо шлях до PATH
-              $env:PATH += ";C:\Program Files\doxygen\bin"
-              } else {
-                Write-Host "Doxygen not found at expected location."
-                exit 1
-              }
+              $env:PATH += ";C:\doxygen\bin"
+            } else {
+              Write-Host "Doxygen not found at the expected location."
+              exit 1
+
+      - name: Check if Doxygen is installed
+        run: doxygen --version
 
       - name: Check if Doxygen is installed
         run: doxygen --version
