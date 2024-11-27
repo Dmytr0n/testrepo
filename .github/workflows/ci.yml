@@ -17,9 +17,13 @@ jobs:
 
       - name: Install Scoop
         run: |
-              Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-              irm get.scoop.sh | iex
-
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+          irm get.scoop.sh | iex
+  
+      - name: Add Scoop to PATH
+        run: |
+          $env:PATH += ";$env:USERPROFILE\scoop\shims"
+          echo $env:PATH
       - name: Install Doxygen and Graphviz using Scoop
         run: |
           scoop install doxygen
