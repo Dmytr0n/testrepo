@@ -31,6 +31,7 @@ jobs:
         run: |
              $env:PATH += ";C:\Program Files\doxygen\bin"  # Замість цього шляху використовуйте точний шлях до Doxygen, якщо інший
 
+      - name: Check if Doxygen is installed
+        run: doxygen --version 
       
-    
    
