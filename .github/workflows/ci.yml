@@ -27,6 +27,7 @@ jobs:
           $env:PATH += ";$env:USERPROFILE\scoop\shims"
           scoop install doxygen
           scoop install graphviz
+          $env:PATH += ";$env:USERPROFILE\scoop\apps\doxygen\current\bin"
   
       - name: Generate Doxygen documentation
         run: doxygen Doxyfile
