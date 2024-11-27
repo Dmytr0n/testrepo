@@ -23,6 +23,8 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Set up Doxygen
+      - name: Download Doxygen from official site
         run: |
-            choco install doxygen
+            Invoke-WebRequest -Uri "https://doxygen.nl/files/doxygen-1.9.5.1.w64.msi" -OutFile "doxygen.msi"
+            msiexec /i doxygen.msi /quiet
+
