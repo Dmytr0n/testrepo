@@ -106,7 +106,6 @@ namespace game_client
             this.label1.Size = new System.Drawing.Size(196, 48);
             this.label1.TabIndex = 12;
             this.label1.Text = "Load menu";
-            this.label1.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // LoadForm
             // 

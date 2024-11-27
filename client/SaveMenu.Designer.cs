@@ -91,7 +91,6 @@ namespace game_client
             this.label4.Size = new System.Drawing.Size(168, 37);
             this.label4.TabIndex = 24;
             this.label4.Text = "Game score:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // panel3
             // 
@@ -193,7 +192,6 @@ namespace game_client
             this.Controls.Add(this.panel1);
             this.Name = "SaveMenu";
             this.Text = "SaveMenu";
-            this.Load += new System.EventHandler(this.SaveMenu_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel4.ResumeLayout(false);

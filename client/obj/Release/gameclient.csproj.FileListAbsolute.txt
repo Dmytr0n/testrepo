@@ -1,0 +1,15 @@
+C:\lab4_apcs\update\deploy\client\game client.exe.config
+C:\lab4_apcs\update\deploy\client\game client.exe
+C:\lab4_apcs\update\deploy\client\game client.pdb
+C:\lab4_apcs\update\client\obj\Release\gameclient.csproj.AssemblyReference.cache
+C:\lab4_apcs\update\client\obj\Release\game client.exe.config
+C:\lab4_apcs\update\client\obj\Release\game_client.Form1.resources
+C:\lab4_apcs\update\client\obj\Release\game_client.LoadForm.resources
+C:\lab4_apcs\update\client\obj\Release\game_client.Properties.Resources.resources
+C:\lab4_apcs\update\client\obj\Release\game_client.SaveMenu.resources
+C:\lab4_apcs\update\client\obj\Release\game_client.SettingsForm.resources
+C:\lab4_apcs\update\client\obj\Release\gameclient.csproj.GenerateResource.cache
+C:\lab4_apcs\update\client\obj\Release\gameclient.csproj.CoreCompileInputs.cache
+C:\lab4_apcs\update\client\obj\Release\gameclient.csproj.CopyComplete
+C:\lab4_apcs\update\client\obj\Release\game client.exe
+C:\lab4_apcs\update\client\obj\Release\game client.pdb

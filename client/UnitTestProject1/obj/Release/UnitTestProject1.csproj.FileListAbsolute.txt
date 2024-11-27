@@ -1,0 +1,11 @@
+C:\lab4_apcs\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\lab4_apcs\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\lab4_apcs\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\lab4_apcs\update\deploy\client\UnitTestProject1.dll.config
+C:\lab4_apcs\update\deploy\client\UnitTestProject1.dll
+C:\lab4_apcs\update\deploy\client\UnitTestProject1.pdb
+C:\lab4_apcs\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.AssemblyReference.cache
+C:\lab4_apcs\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CoreCompileInputs.cache
+C:\lab4_apcs\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CopyComplete
+C:\lab4_apcs\update\client\UnitTestProject1\obj\Release\UnitTestProject1.dll
+C:\lab4_apcs\update\client\UnitTestProject1\obj\Release\UnitTestProject1.pdb
