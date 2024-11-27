@@ -14,50 +14,8 @@ jobs:
       steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Install Scoop
-        run: |
-          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-          irm get.scoop.sh | iex
-
-      - name: Install Doxygen and Graphviz using Scoop
-        shell: pwsh
-        run: |
-          # Додаємо Scoop в PATH для поточного сеансу
-          $env:PATH += ";$env:USERPROFILE\scoop\shims"
-          
-          # Встановлюємо Doxygen та Graphviz
-          scoop install doxygen
-          scoop install graphviz
-  
-          # Додаємо Doxygen в PATH для поточного сеансу
-          $env:PATH += ";$env:USERPROFILE\scoop\apps\doxygen\current\bin"
-          
-          # Виводимо шлях до Doxygen, щоб перевірити, чи він вірно додався
-          echo "Doxygen Path: $env:PATH"
-  
-      - name: Verify Doxygen availability
-        shell: pwsh
-        run: |
-          # Перевіряємо, чи доступна команда doxygen
-          $doxygenPath = "$env:USERPROFILE\scoop\apps\doxygen\current\bin\doxygen.exe"
-          Write-Output "Doxygen Path: $doxygenPath"
-          if (Test-Path $doxygenPath) {
-            Write-Output "Doxygen is installed and accessible."
-          } else {
-            Write-Error "Doxygen is not accessible."
-            exit 1
-          }
-  
-      - name: Generate Doxygen documentation
-        shell: pwsh
-        run: |
-          # Використовуємо абсолютний шлях до doxygen
-          $doxygenPath = "$env:USERPROFILE\scoop\apps\doxygen\current\bin\doxygen.exe"
-          if (Test-Path $doxygenPath) {
-            & $doxygenPath Doxyfile
-          } else {
-            Write-Error "Doxygen executable not found."
-            exit 1
-          }
-
+        
+      - name: Install Doxygen
+      - uses: ssciwr/doxygen-install@v1
+        with:
+             version: "1.12.0"
