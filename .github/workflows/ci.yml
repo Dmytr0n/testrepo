@@ -19,15 +19,19 @@ jobs:
         run: |
             .\doxygen-installer.exe /quiet /install
 
-      - name: Check if Doxygen is available in PATH
+      - name: Find Doxygen installation path
         run: |
-          $doxygenPath = Get-Command doxygen -ErrorAction SilentlyContinue
-          if ($null -eq $doxygenPath) {
-          Write-Host "Doxygen is not installed or not found in PATH"
-          exit 1
-          } else {
-          Write-Host "Doxygen found at: $doxygenPath"
-          }
+              # Знайдемо, де було інстальовано Doxygen
+              $doxygenPath = "C:\Program Files\doxygen\bin\doxygen.exe"
+              if (Test-Path $doxygenPath) {
+              Write-Host "Doxygen is installed at $doxygenPath"
+              # Додаємо шлях до PATH
+              $env:PATH += ";C:\Program Files\doxygen\bin"
+              } else {
+                Write-Host "Doxygen not found at expected location."
+                exit 1
+              }
+
       - name: Check if Doxygen is installed
         run: doxygen --version
 
