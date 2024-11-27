@@ -23,8 +23,9 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Install Doxygen
-        run: choco install doxygen
+      - name: Install Doxygen via winget
+        shell: cmd
+        run: winget install --id Doxygen.Doxygen
 
       - name: Run CMD script
         shell: cmd
