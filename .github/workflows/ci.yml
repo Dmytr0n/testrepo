@@ -23,6 +23,9 @@ jobs:
         with:
           version: 0.33.1
 
+      - name: Install Doxygen
+        run: choco install doxygen
+
       - name: Run CMD script
         shell: cmd
         run: |
