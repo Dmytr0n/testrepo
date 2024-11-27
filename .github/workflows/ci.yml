@@ -25,9 +25,18 @@ jobs:
         run: |
           # Додаємо Scoop в PATH для поточного сеансу
           $env:PATH += ";$env:USERPROFILE\scoop\shims"
+          
+          # Встановлюємо Doxygen та Graphviz
           scoop install doxygen
           scoop install graphviz
-          $env:PATH += ";$env:USERPROFILE\scoop\apps\doxygen\current\bin"
   
+          # Додаємо Doxygen в PATH для поточного сеансу
+          $env:PATH += ";$env:USERPROFILE\scoop\apps\doxygen\current\bin"
+          
       - name: Generate Doxygen documentation
-        run: doxygen Doxyfile
+        shell: pwsh
+        run: |
+          # Переконуємося, що Doxygen доступний у PATH
+          echo $env:PATH
+          doxygen Doxyfile
+
