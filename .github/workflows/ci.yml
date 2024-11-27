@@ -23,14 +23,9 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Download Doxygen
-        run: |
-          Invoke-WebRequest -Uri https://www.doxygen.nl/download/doxygen-1.9.5.win64.exe -OutFile doxygen-installer.exe
-
-      - name: Install Doxygen
-        run: |
-          Start-Process -Wait -FilePath .\doxygen-installer.exe -ArgumentList '/S'
-      
+      - name: doxygen-install
+        uses: ssciwr/doxygen-install@v1.6.0
+            
       - name: Run CMD script
         shell: cmd
         run: |
@@ -40,5 +35,9 @@ jobs:
         with:
           name: script-results
           path: ./artefacts
-    
-   
+          
+      - name: Upload Doxygen documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: doxygen-documentation
+          path: ./docs/
