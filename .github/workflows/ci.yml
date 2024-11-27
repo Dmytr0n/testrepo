@@ -113,9 +113,10 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Install Doxygen
-        run: choco install doxygen
-      
+      - name: Run Doxygen in Docker
+        run: |
+              docker run --rm -v $(pwd):/workspace doxygen/doxygen:latest doxygen Doxyfile
+
       - name: Run CMD script
         shell: cmd
         run: |
