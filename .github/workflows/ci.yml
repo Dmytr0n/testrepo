@@ -23,9 +23,17 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Install Doxygen via winget
+      - name: Install Doxygen manually
         shell: cmd
-        run: winget install --id Doxygen.Doxygen
+        run: |
+              echo Downloading Doxygen...
+              curl -LO https://www.doxygen.nl/files/doxygen-1.9.4.windows.x64.bin.zip
+              echo Extracting Doxygen...
+              powershell -Command "Expand-Archive -Path 'doxygen-1.9.4.windows.x64.bin.zip' -DestinationPath '%cd%\doxygen'"
+              echo Adding Doxygen to PATH...
+              set PATH=%cd%\doxygen\doxygen-1.9.4.windows.x64\bin;%PATH%
+              echo Doxygen installed successfully.
+
 
       - name: Run CMD script
         shell: cmd
