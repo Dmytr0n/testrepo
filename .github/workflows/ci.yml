@@ -10,41 +10,128 @@ on:
 
 jobs:
   run-script:
-      runs-on: windows-latest
-      steps:
+    runs-on: windows-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
-
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
-        with:
-          version: 0.33.1
 
       - name: Install Doxygen manually
         shell: cmd
         run: |
-              echo Downloading Doxygen...
-              curl -LO https://www.doxygen.nl/files/doxygen-1.9.4.windows.x64.bin.zip
-              echo Extracting Doxygen...
-              powershell -Command "Expand-Archive -Path 'doxygen-1.9.4.windows.x64.bin.zip' -DestinationPath '%cd%\doxygen'"
-              echo Adding Doxygen to PATH...
-              set PATH=%cd%\doxygen\doxygen-1.9.4.windows.x64\bin;%PATH%
-              echo Doxygen installed successfully.
+          echo Downloading Doxygen...
+          curl -LO https://www.doxygen.nl/files/doxygen-1.9.4.windows.x64.bin.zip
+          
+          echo Extracting Doxygen...
+          powershell -Command "Expand-Archive -Path 'doxygen-1.9.4.windows.x64.bin.zip' -DestinationPath '%cd%\doxygen'"
+          
+          echo Adding Doxygen to PATH...
+          setx PATH "%cd%\doxygen\doxygen-1.9.4.windows.x64\bin;%PATH%" /M
+          
+          echo Doxygen installed successfully.
 
-
-      - name: Run CMD script
+      - name: Verify Doxygen installation
         shell: cmd
         run: |
-          .\run_local_build.bat COM5 9600
+          echo Verifying Doxygen installation...
+          doxygen --version
 
-      - name: Upload script results as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: script-results
-          path: ./artefacts
+      - name: Generate documentation using Doxygen
+        shell: cmd
+        run: |
+          echo Step 17: Generating documentation with Doxygen...
+          
+          REM Set project folder and code directory paths
+          set projectFolder=%cd%
+          set codeDirectory=%projectFolder%\client
+          
+          REM Check if Doxygen is installed
+          where doxygen >nul 2>nul
+          if errorlevel 1 (
+              echo Error: Doxygen is not installed or not in PATH. Please install it or add to PATH.
+              set step17Status=FAILED
+              exit /b 1
+          ) else (
+              echo Doxygen found.
+          )
+          
+          REM Define paths
+          set doxyfilePath=%projectFolder%\Doxyfile
+          set doxyOutputFolder=%projectFolder%\docs
+          
+          REM Check if Doxyfile exists
+          if not exist "%doxyfilePath%" (
+              echo Doxyfile not found. Creating a default Doxyfile...
+          
+              REM Generate a default Doxyfile
+              doxygen -g "%doxyfilePath%"
+              if errorlevel 1 (
+                  echo Error: Failed to create default Doxyfile. Please check permissions and try again.
+                  set step17Status=FAILED
+                  exit /b 1
+              ) else (
+                  echo Default Doxyfile created at %doxyfilePath%.
+              )
+          )
+          
+          REM Modify Doxyfile to include project-specific paths
+          echo Configuring Doxyfile...
+          
+          REM Ensure the output directory exists
+          if not exist "%doxyOutputFolder%" (
+              mkdir "%doxyOutputFolder%"
+              echo Output folder created: %doxyOutputFolder%.
+          ) else (
+              echo Output folder already exists: %doxyOutputFolder%.
+          )
+          
+          REM Configure the Doxyfile with necessary settings
+          (
+              for /f "tokens=1,* delims== " %%A in ('type "%doxyfilePath%"') do (
+                  if /i "%%A"=="OUTPUT_DIRECTORY" (
+                      echo OUTPUT_DIRECTORY = %doxyOutputFolder%
+                  ) else if /i "%%A"=="INPUT" (
+                      echo INPUT = %codeDirectory%
+                  ) else if /i "%%A"=="FILE_PATTERNS" (
+                      echo FILE_PATTERNS = *.cs
+                  ) else if /i "%%A"=="EXTRACT_ALL" (
+                      echo EXTRACT_ALL = YES
+                  ) else if /i "%%A"=="GENERATE_LATEX" (
+                      echo GENERATE_LATEX = NO
+                  ) else if /i "%%A"=="USE_PLMU" (
+                      echo USE_PLMU = YES
+                  ) else if /i "%%A"=="IMAGE_PATH" (
+                      echo IMAGE_PATH = media\doc_img
+                  ) else (
+                      echo %%A=%%B
+                  )
+              )
+          ) > "%doxyfilePath%.tmp"
+          
+          REM Replace original Doxyfile with updated version
+          move /Y "%doxyfilePath%.tmp" "%doxyfilePath%"
+          if errorlevel 1 (
+              echo Error: Failed to update Doxyfile.
+              set step17Status=FAILED
+              exit /b 1
+          ) else (
+              echo Doxyfile configured successfully.
+          )
+          
+          REM Run Doxygen to generate documentation
+          echo Running Doxygen...
+          doxygen "%doxyfilePath%"
+          if errorlevel 1 (
+              echo Error: Doxygen failed to generate documentation. Check the configuration and try again.
+              set step17Status=FAILED
+              exit /b 1
+          ) else (
+              echo Documentation generated successfully in %doxyOutputFolder%.
+              set step17Status=PASSED
+          )
+          
+          REM Step 17 completed successfully.
+          echo Step 17 completed successfully. [PASSED]
+
 
         
 
