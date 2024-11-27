@@ -15,12 +15,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Doxygen using winget
+      - name: Download and Install Doxygen
         shell: cmd
         run: |
-          echo Installing Doxygen using winget...
-          winget install --id Doxygen.Doxygen -e --source winget
-          
+          echo Downloading Doxygen installer...
+          curl -L -o doxygen_installer.zip https://github.com/doxygen/doxygen/releases/download/1.9.3/doxygen-1.9.3-win64.exe
+
+          echo Extracting Doxygen...
+          mkdir doxygen
+          expand doxygen_installer.zip -F:* doxygen\
+
+          echo Installing Doxygen...
+          doxygen\bin\doxygen.exe --version
+
       - name: Verify Doxygen installation
         shell: cmd
         run: |
@@ -124,8 +131,6 @@ jobs:
           REM Step 17 completed successfully.
           echo Step 17 completed successfully. [PASSED]
 
-    
-   
 
         
 
