@@ -1,37 +1,23 @@
-name: Build C# GUI App
+name: Doxygen Documentation (Windows)
 
 on:
   push:
     branches:
-      - '*'
+      - main
   pull_request:
     branches:
-      - '*'
+      - main
 
 jobs:
-  run-script:
-      runs-on: windows-latest
-      steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  doxygen:
+    runs-on: windows-latest
 
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
-        with:
-          version: 0.33.1
-
-      - name: Install Doxygen from repo
-        run: |
-          .\doxygen-installer.exe /S  # або використовуйте шлях, якщо файл знаходиться в іншій папці, наприклад: .\tools\doxygen-installer.exe
-
-      - name: Add Doxygen to PATH
-        run: |
-             $env:PATH += ";C:\Program Files\doxygen\bin"  # Замість цього шляху використовуйте точний шлях до Doxygen, якщо інший
-
-      - name: Check if Doxygen is installed
-        run: doxygen --version 
+    - name: Set up Doxygen
+      run: |
+        choco install doxygen
       
    
