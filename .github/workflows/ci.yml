@@ -10,18 +10,28 @@ on:
 
 jobs:
   run-script:
-    runs-on: windows-latest
-    steps:
+      runs-on: windows-latest
+      steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+        with:
+          version: 0.33.1
+
       - name: doxygen-install
         uses: ssciwr/doxygen-install@v1.6.0
             
-      - name: Generate Documentation with Doxygen
+      - name: Run CMD script
+        shell: cmd
         run: |
-          # Переконатися, що Doxygen успішно встановлений
-          doxygen --version
-          
-          # Запуск Doxygen для генерації документації
-          doxygen Doxyfile
+          .\run_local_build.bat COM5 9600
+      - name: Upload script results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-results
+          path: ./artefacts
