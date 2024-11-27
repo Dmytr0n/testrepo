@@ -35,3 +35,9 @@ jobs:
         with:
           name: script-results
           path: ./artefacts
+          
+      - name: Upload Doxygen documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: doxygen-documentation
+          path: ./docs/
