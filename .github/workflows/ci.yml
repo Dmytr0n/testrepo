@@ -9,96 +9,6 @@ on:
       - '*'
 
 jobs:
-  client-build:
-    runs-on: windows-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up .NET Framework 4.7.2
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '16.0' # Visual Studio version
-        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
-
-    - name: Restore NuGet packages
-      run: nuget restore client/gameclient.sln
-
-    - name: Build project
-      run: msbuild client/gameclient.sln /p:Configuration=Release /p:OutputPath=$(pwd)/ci/bin
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: game-client-artifacts
-        path: ci/bin
-        
-  client-test:
-    runs-on: windows-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up .NET Framework 4.7.2
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '16.0'
-        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
-
-    - name: Restore NuGet packages
-      run: nuget restore client/gameclient.sln
-
-    - name: Build project for testing
-      run: msbuild client/gameclient.sln /p:Configuration=Debug
-    
-    
-    - name: Copy folder
-      run: |
-            cmd.exe /c xcopy /E /I .\media\img .\client\UnitTestProject1\bin\Debug\img  
-            
-    - name: Run tests and save results as .trx
-      run: |
-        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
-    
-    - name: Upload test results as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-results
-        path: ./TestResults
-
-  arduino-build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install Arduino CLI
-      run: |
-        mkdir -p ~/arduino-cli
-        wget -qO- https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz | tar xvz -C ~/arduino-cli
-        sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/
-   
-    - name: Set up Arduino CLI
-      run: |
-        arduino-cli config init
-        arduino-cli core update-index
-    
-    - name: Install board package
-      run: arduino-cli core install arduino:avr
-
-    - name: Compile Arduino code
-      run: |
-        arduino-cli compile --fqbn arduino:avr:uno server/server.ino --output-dir ./build
-
-    - name: Upload Arduino build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: arduino-build
-        path: ./build
-
   run-script:
       runs-on: windows-latest
       steps:
@@ -112,12 +22,6 @@ jobs:
         uses: arduino/setup-arduino-cli@v1
         with:
           version: 0.33.1
-
-      - name: Download and Install Doxygen
-        run: |
-              Invoke-WebRequest -Uri "https://github.com/doxygen/doxygen/releases/download/1.9.4/doxygen-1.9.4-setup.exe" -OutFile "doxygen-setup.exe"
-              Start-Process -FilePath "doxygen-setup.exe" -ArgumentList "/S" -Wait
-              Remove-Item -Force "doxygen-setup.exe"
 
       - name: Run CMD script
         shell: cmd
