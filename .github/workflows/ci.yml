@@ -113,9 +113,11 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Run Doxygen in Docker
+      - name: Download and Install Doxygen
         run: |
-              docker run --rm -v $(pwd):/workspace doxygen/doxygen:latest doxygen Doxyfile
+              Invoke-WebRequest -Uri "https://github.com/doxygen/doxygen/releases/download/1.9.4/doxygen-1.9.4-setup.exe" -OutFile "doxygen-setup.exe"
+              Start-Process -FilePath "doxygen-setup.exe" -ArgumentList "/S" -Wait
+              Remove-Item -Force "doxygen-setup.exe"
 
       - name: Run CMD script
         shell: cmd
