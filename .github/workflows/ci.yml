@@ -19,9 +19,6 @@ jobs:
         run: |
             .\doxygen-installer.exe /quiet /install
 
-      - name: Check if Doxygen is installed
-        run: doxygen --version
-
       - name: Check if Doxygen is available in PATH
         run: |
           $doxygenPath = Get-Command doxygen -ErrorAction SilentlyContinue
@@ -31,6 +28,8 @@ jobs:
           } else {
           Write-Host "Doxygen found at: $doxygenPath"
           }
+      - name: Check if Doxygen is installed
+        run: doxygen --version
 
       
 
