@@ -23,6 +23,14 @@ jobs:
         with:
           version: 0.33.1
 
+      - name: Download Doxygen
+        run: |
+          Invoke-WebRequest -Uri https://www.doxygen.nl/download/doxygen-1.9.5.win64.exe -OutFile doxygen-installer.exe
+
+      - name: Install Doxygen
+        run: |
+          Start-Process -Wait -FilePath .\doxygen-installer.exe -ArgumentList '/S'
+      
       - name: Run CMD script
         shell: cmd
         run: |
