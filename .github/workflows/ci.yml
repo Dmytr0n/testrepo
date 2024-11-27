@@ -15,24 +15,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Doxygen from .exe to specific directory
+      - name: Install Chocolatey
         run: |
-            .\doxygen-installer.exe /quiet /install INSTALLDIR="C:\doxygen"
-
-      - name: Find Doxygen installation path
+          Set-ExecutionPolicy Bypass -Scope Process -Force; 
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  
+      - name: Install Doxygen and Graphviz
         run: |
-            $doxygenPath = "C:\doxygen\bin\doxygen.exe"
-            if (Test-Path $doxygenPath) {
-              Write-Host "Doxygen is installed at $doxygenPath"
-              $env:PATH += ";C:\doxygen\bin"
-            } else {
-              Write-Host "Doxygen not found at the expected location."
-              exit 1
-              }
-
-      - name: Check if Doxygen is installed
-        run: doxygen --version
-
-      
+          choco install doxygen
+          choco install graphviz
+  
+      - name: Generate Doxygen documentation
+        run: doxygen Doxyfile 
+        
 
 
