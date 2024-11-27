@@ -15,20 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Doxygen manually
+      - name: Install Doxygen using Chocolatey
         shell: cmd
         run: |
-          echo Downloading Doxygen...
-          curl -LO https://www.doxygen.nl/files/doxygen-1.9.4.windows.x64.bin.zip
+          echo Installing Doxygen...
+          choco install doxygen -y
           
-          echo Extracting Doxygen...
-          powershell -Command "Expand-Archive -Path 'doxygen-1.9.4.windows.x64.bin.zip' -DestinationPath '%cd%\doxygen'"
-          
-          echo Adding Doxygen to PATH...
-          setx PATH "%cd%\doxygen\doxygen-1.9.4.windows.x64\bin;%PATH%" /M
-          
-          echo Doxygen installed successfully.
-
       - name: Verify Doxygen installation
         shell: cmd
         run: |
@@ -131,9 +123,6 @@ jobs:
           
           REM Step 17 completed successfully.
           echo Step 17 completed successfully. [PASSED]
-
-
-        
 
     
    
