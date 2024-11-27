@@ -23,8 +23,9 @@ jobs:
         with:
           version: 0.33.1
 
-      - name: Download Doxygen from official site
+      - name: Install Doxygen from .exe
         run: |
-            Invoke-WebRequest -Uri "https://doxygen.nl/files/doxygen-1.9.5.1.w64.msi" -OutFile "doxygen.msi"
-            msiexec /i doxygen.msi /quiet
+              # Запуск інсталятора Doxygen з локального файлу
+              .\doxygen-installer.exe /quiet /install
+
 
