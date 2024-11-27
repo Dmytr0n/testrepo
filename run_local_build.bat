@@ -255,16 +255,6 @@ REM Set project folder and code directory paths
 set projectFolder=%cd%
 set codeDirectory=%projectFolder%\client
 
-REM Check if Doxygen is installed
-where doxygen >nul 2>nul
-if errorlevel 1 (
-    echo Error: Doxygen is not installed or not in PATH. Please install it or add to PATH.
-    set step10Status=FAILED
-    goto FinalReport
-) else (
-    echo Doxygen found.
-)
-
 REM Define paths
 set doxyfilePath=%projectFolder%\Doxyfile
 set doxyOutputFolder=%projectFolder%\docs
