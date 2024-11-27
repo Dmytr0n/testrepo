@@ -19,8 +19,7 @@ jobs:
         run: |
           Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
           irm get.scoop.sh | iex
-  
-      
+
       - name: Install Doxygen and Graphviz using Scoop
         shell: pwsh
         run: |
@@ -41,5 +40,24 @@ jobs:
         shell: pwsh
         run: |
           # Перевіряємо, чи доступна команда doxygen
-          doxygen --version
+          $doxygenPath = "$env:USERPROFILE\scoop\apps\doxygen\current\bin\doxygen.exe"
+          Write-Output "Doxygen Path: $doxygenPath"
+          if (Test-Path $doxygenPath) {
+            Write-Output "Doxygen is installed and accessible."
+          } else {
+            Write-Error "Doxygen is not accessible."
+            exit 1
+          }
+  
+      - name: Generate Doxygen documentation
+        shell: pwsh
+        run: |
+          # Використовуємо абсолютний шлях до doxygen
+          $doxygenPath = "$env:USERPROFILE\scoop\apps\doxygen\current\bin\doxygen.exe"
+          if (Test-Path $doxygenPath) {
+            & $doxygenPath Doxyfile
+          } else {
+            Write-Error "Doxygen executable not found."
+            exit 1
+          }
 
