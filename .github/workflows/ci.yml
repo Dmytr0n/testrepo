@@ -15,17 +15,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
-
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
-        with:
-          version: 0.33.1
-
       - name: Install Doxygen from .exe
         run: |
-              # Запуск інсталятора Doxygen з локального файлу
-              .\doxygen-installer.exe /quiet /install
+            .\doxygen-installer.exe /quiet /install
+
+      - name: Check if Doxygen is installed
+        run: doxygen --version
+
+      - name: Check if Doxygen is available in PATH
+        run: |
+          $doxygenPath = Get-Command doxygen -ErrorAction SilentlyContinue
+          if ($null -eq $doxygenPath) {
+          Write-Host "Doxygen is not installed or not found in PATH"
+          exit 1
+          } else {
+          Write-Host "Doxygen found at: $doxygenPath"
+          }
+
+      
 
 
