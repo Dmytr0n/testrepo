@@ -35,16 +35,31 @@ jobs:
         with:
           name: script-results
           path: ./artefacts
-      
-      - name: Copy folder
-        run: |
-            cmd.exe /c xcopy /E /I .\media\img .\client\UnitTestProject1\bin\Debug\img  
-   
-      - name: Run tests with coverage
-        run: dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll"  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           
       - name: Upload Doxygen documentation as artifact
         uses: actions/upload-artifact@v3
         with:
           name: doxygen-documentation
           path: ./docs/
+      
+      - name: Install OpenCover
+        run: choco install opencover
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Run tests with coverage using OpenCover
+        run: |
+          mkdir coverage
+          OpenCover.Console.exe -register:user -target:"dotnet" -targetargs:"test deploy\client\UnitTestProject1.dll --logger:trx --collect:\"XPlat Code Coverage\"" -output:"coverage\coverage.xml" -filter:"+[*]* -[game_client.Properties.Resources]*"
+          
+      - name: Generate coverage report
+        run: |
+          choco install reportgenerator
+          ReportGenerator.exe -reports:coverage\coverage.xml -targetdir:coverage-report -reporttypes:Html
+          
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage-report
