@@ -48,11 +48,10 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore client/gameclient.sln
   
-      - name: Run tests with coverage using OpenCover
+      - name: Run tests with coverage
         run: |
-          mkdir coverage
-          OpenCover.Console.exe -register:user -target:"dotnet" -targetargs:"test deploy\client\UnitTestProject1.dll --logger:trx --collect:\"XPlat Code Coverage\"" -output:"coverage\coverage.xml" -filter:"+[*]* -[game_client.Properties.Resources]*"
-          
+              dotnet test deploy\client\UnitTestProject1.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage/
+         
       - name: Generate coverage report
         run: |
           choco install reportgenerator
