@@ -35,6 +35,12 @@ jobs:
         with:
           name: script-results
           path: ./artefacts
+     
+      - name: OpenCover Badge Generator
+        uses: danpetitt/open-cover-badge-generator-action@v1.0.10
+            
+      - name: Run tests with coverage
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           
       - name: Upload Doxygen documentation as artifact
         uses: actions/upload-artifact@v3
