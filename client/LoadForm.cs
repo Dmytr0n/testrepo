@@ -16,10 +16,8 @@ namespace game_client
     /// This diagram illustrates the inheritance structure for the LoadForm class.
     public partial class LoadForm : Form
     {
-        public Dictionary<string, string> gameKeys = new Dictionary<string, string>();
-        public Form1 mainForm;
-        public string gameMode;
-        public string gameScore;
+        private Dictionary<string, string> gameKeys = new Dictionary<string, string>(); 
+        private Form1 mainForm;
         /// <summary>
         /// Initializes a new instance of the <c>LoadForm</c> class.
         /// </summary>
@@ -144,23 +142,16 @@ namespace game_client
                         }
                     }
                 }
-
-                Console.WriteLine($"Loaded {gameCount} games"); // закоментовано для збільшення покриття або інше повідомлення для тестів MessageBox.Show($"Loaded {gameCount} games", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-
-
+                MessageBox.Show($"Loaded {gameCount} games", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (FileNotFoundException ex)
             {
-
-                Console.WriteLine($"File not found: {ex.Message}"); // закоментовано для збільшення покриття або інше повідомлення для тестів MessageBox.Show($"File not found: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show($"File not found: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //catch (Exception ex) закоментовано для збільшення покриття
-            //{
-            // MessageBox.Show($"Error reading file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error reading file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
         // <summary>
@@ -215,23 +206,19 @@ namespace game_client
         ///     }
         /// }
         /// @endcode
-        
         public void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            /*
             if (listView1.SelectedItems.Count > 0)
             {
                 ListViewItem selectedItem = listView1.SelectedItems[0];
-                gameMode = selectedItem.SubItems[1].Text; // Режим гри
-                gameScore = selectedItem.SubItems[2].Text; // Рахунок гри
+                string gameMode = selectedItem.SubItems[1].Text; // Режим гри
+                string gameScore = selectedItem.SubItems[2].Text; // Рахунок гри
 
                 // Викликаємо метод у MainForm для передачі даних
                 mainForm.SetGameData(gameMode, gameScore);
                 this.Close();
             }
-            */
         }
-
         /// <summary>
         /// Handles the click event on the "Delete Game" button to remove a selected game session.
         /// </summary>
@@ -300,7 +287,7 @@ namespace game_client
         /// @endcode
         public void button1_Click_1(object sender, EventArgs e)
         {
-            /*if (listView1.SelectedItems.Count > 0)
+            if (listView1.SelectedItems.Count > 0)
             {
                 // Отримання даних з вибраного елемента
                 string selectedGameName = listView1.SelectedItems[0].SubItems[0].Text; // Назва гри
@@ -353,18 +340,15 @@ namespace game_client
                     MessageBox.Show("Game session deleted successfully.");
                     LoadSavedGames(); // Оновлюємо список ігор
                 }
-                //else
-                //{
-                    //MessageBox.Show("Game session not found for deletion."); закоментовано для збільшення покриття в тестах
-                //}
+                else
+                {
+                    MessageBox.Show("Game session not found for deletion.");
+                }
             }
             else
             {
-                Console.WriteLine("Please select a game session to delete."); //MessageBox.Show("Please select a game session to delete.");
+                MessageBox.Show("Please select a game session to delete.");
             }
-        }
-
-       */
         }
     }
 }

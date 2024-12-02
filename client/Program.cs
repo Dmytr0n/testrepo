@@ -6,13 +6,13 @@ using System.Windows.Forms;
 
 namespace game_client
 {
-    public static class Program
+    static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        public static void Main()
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

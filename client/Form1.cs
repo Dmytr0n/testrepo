@@ -20,13 +20,7 @@ namespace game_client
     /// </summary>
     public partial class Form1 : Form
     {
-        public bool IsExitCalled { get; set; } = false;
-        public bool StartMenuCalled { get; private set; } = false;
-        public bool Player1Called { get; private set; } = false;
-        public bool ServerControlCalled { get; private set; } = false;
-
-
-        /// <summary>
+        // <summary>
         /// Used to play background music.
         /// </summary>
         public SoundPlayer _player = new SoundPlayer();
@@ -95,7 +89,7 @@ namespace game_client
         /// Used to communicate with external hardware (e.g., Arduino or other devices).
         /// </summary>
         public SerialPort serialPort = new SerialPort();
-        
+
         /// <summary>
         /// List to store Player 1's moves.
         /// Each element in the list corresponds to a move made by Player 1 (1 - Rock, 2 - Paper, 3 - Scissors).
@@ -406,7 +400,6 @@ namespace game_client
         /// </remarks>
         public void StartMenu()
         {
-            ServerControlCalled = true;
             // Вказуємо шлях до ini файлу
             IniFile ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
             try
@@ -434,7 +427,8 @@ namespace game_client
             }
             catch (Exception ex)
             {
-               Console.WriteLine($"Error reading INI file: " + ex.Message); //  MessageBox.Show("Error reading INI file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);або інше повідомлення для тестів
+                MessageBox.Show("Error reading INI file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
             label2.Visible = false;
             panel1.Visible = false;
@@ -445,7 +439,6 @@ namespace game_client
             panel3.Visible = false;
             panel8.Visible = false;
             panel13.Visible = false;
-            StartMenuCalled = true;
         }
         /// <summary>
         /// Draws a custom border around a panel.
@@ -669,7 +662,6 @@ namespace game_client
         /// </remarks>
         public virtual void Player1()
         {
-            Player1Called = true;
             panel1.Visible = false;
             panel2.Visible = false;
             panel3.Visible = true;
@@ -833,72 +825,72 @@ namespace game_client
         public void Player2()
         {
             panel8.Visible = true;
-
-            // Створюємо функції для кожного режиму
-            Action randomChoiceAction = () =>
+            if (mode == "Man VS AI" || mode == "AI VS AI" && randomMode == true)
             {
+                // Initialize a timer for AI's random choice
                 clickTimer = new Timer();
-                clickTimer.Interval = 1000;
+                clickTimer.Interval = 1000; // 1-second delay
                 clickTimer.Tick += (s, e) =>
                 {
-                    clickTimer.Stop();
+                    clickTimer.Stop(); 
+
+                    // Generate a random choice (1: Rock, 2: Paper, 3: Scissors)
                     int buttonNumber = random.Next(1, 4);
-                    SimulateButtonClick(buttonNumber);
-                };
-                clickTimer.Start();
-            };
 
-            Action strategicChoiceAction = () =>
+                    // Simulate button clicks
+                    switch (buttonNumber)
+                    {
+                        case 1:
+                            button11.PerformClick();
+                            break;
+                        case 2:
+                            button12.PerformClick();
+                            break;
+                        case 3:
+                            button13.PerformClick();
+                            break;
+                    }
+                };
+                clickTimer.Start(); 
+            }
+            // Initialize a timer for AI's strategic choice
+            else if ((mode == "Man VS AI" || mode == "AI VS AI") && winStrategy == true)
             {
                 clickTimer = new Timer();
                 clickTimer.Interval = 1000;
                 clickTimer.Tick += (s, e) =>
                 {
                     clickTimer.Stop();
-                    int buttonNumber = (player1Moves.Count >= 5) ? GetCounterMove() : random.Next(1, 4);
-                    SimulateButtonClick(buttonNumber);
+
+                    int buttonNumber;
+
+                    // If enough data is available, calculate a counter move
+                    if (winStrategy == true && player1Moves.Count >= 5)
+                    {
+                        buttonNumber = GetCounterMove();
+                    }
+                    else
+                    {
+                        // Default to a random choice if data is insufficient
+                        buttonNumber = random.Next(1, 4);
+                    }
+
+                    switch (buttonNumber)
+                    {
+                        case 1:
+                            button11.PerformClick(); // Paper
+                            break;
+                        case 2:
+                            button12.PerformClick(); // Scissors
+                            break;
+                        case 3:
+                            button13.PerformClick(); // Rock
+                            break;
+                    }
                 };
                 clickTimer.Start();
-            };
-
-            // Словник для зберігання режимів
-            var actionDict = new Dictionary<string, Action>
-    {
-        { "Man VS AI", randomChoiceAction },
-        { "AI VS AI", randomChoiceAction },
-        { "Man VS AI Strategy", strategicChoiceAction },
-        { "AI VS AI Strategy", strategicChoiceAction }
-    };
-
-            // Перевірка, чи існує відповідна дія для вибраного режиму
-            string actionKey = (mode == "Man VS AI" || mode == "AI VS AI")
-                ? (randomMode ? "Man VS AI" : "Man VS AI Strategy")
-                : null;
-
-            // Виконати дію, якщо вона визначена
-            if (actionKey != null && actionDict.ContainsKey(actionKey))
-            {
-                actionDict[actionKey].Invoke();
             }
         }
-
-        private void SimulateButtonClick(int buttonNumber)
-        {
-            switch (buttonNumber)
-            {
-                case 1:
-                    button11.PerformClick(); // Rock
-                    break;
-                case 2:
-                    button12.PerformClick(); // Paper
-                    break;
-                case 3:
-                    button13.PerformClick(); // Scissors
-                    break;
-            }
-        }
-
-
         /// <summary>
         /// Calculates the counter move based on Player 1's previous moves.
         /// Analyzes the last 5 moves and predicts the most likely move to counter it.
@@ -1400,7 +1392,6 @@ namespace game_client
         /// </summary>
         public void serverControl()
         {
-            ServerControlCalled = true;
             IniFile ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
             string portName = ini.Read("TextBoxValues", "TextBox1", "");
             try
@@ -1425,7 +1416,7 @@ namespace game_client
                     }
                     catch (TimeoutException)
                     {
-                        Console.WriteLine("The serial port is inactive or not responding."); // або інше повідомлення для тестів  MessageBox.Show("The serial port is inactive or not responding.", "Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("The serial port is inactive or not responding.", "Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         StartMenu(); // Перенаправлення на головне меню
                         button1.Visible = true;
                         button21.Visible = true;
@@ -1438,7 +1429,7 @@ namespace game_client
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message, "Serial Port Error"); // або інше повідомлення для тестів MessageBox.Show("Error: " + ex.Message, "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error: " + ex.Message, "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 StartMenu(); // Перенаправлення на головне меню
                 button1.Visible = true;
                 button21.Visible = true;
@@ -1866,13 +1857,11 @@ namespace game_client
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            /* закоментовано для тестування
             if (serialPort != null && serialPort.IsOpen)
             {
                 serialPort.Close();
             }
             base.OnFormClosing(e);
-            */
         }
         /// <summary>
         /// Handles the click event for the button corresponding to the "Paper" choice for User 2.
@@ -2200,16 +2189,16 @@ namespace game_client
                         textBox2.Text = counter2.Substring(14);
                     }
                     catch (TimeoutException)
-                    { 
-                            Console.WriteLine("The serial port is inactive or not responding."); // або інше повідомлення для тестів  MessageBox.Show("The serial port is inactive or not responding.", "Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                    {
+                        // Якщо порт не відповідає протягом часу таймауту, показуємо повідомлення і повертаємося до головного меню
+                        MessageBox.Show("The serial port is inactive or not responding.", "Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             catch (Exception ex)
             {
-                    Console.WriteLine("Error: " + ex.Message); //MessageBox.Show("Error: " + ex.Message, "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                // Обробка інших помилок під час роботи з портом
+                MessageBox.Show("Error: " + ex.Message, "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -2399,7 +2388,6 @@ namespace game_client
         /// </remarks>
         public void button22_Click(object sender, EventArgs e)
         {
-            IsExitCalled = true;
             Application.Exit();
         }
         /// <summary>
@@ -2483,9 +2471,7 @@ namespace game_client
         public void button23_Click(object sender, EventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm();
-            
-                settingsForm.Show(); // Змінено для тесту Відкриваємо як модальне вікно settingsForm.ShowDialog(); // Відкриваємо як модальне вікно 
-            
+            settingsForm.ShowDialog(); // Відкриваємо як модальне вікно
             // Вказуємо шлях до ini файлу
             IniFile ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
             try
@@ -2514,7 +2500,6 @@ namespace game_client
             {
                 MessageBox.Show("Error reading INI file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            settingsForm.Close(); // додав для тестування при нормальному використанні забрати даний код
         }
         /// <summary>
         /// Event handler for the "Save Game" button. This function formats the current game score and opens a <c>SaveMenu</c> to allow the user to save the game.
@@ -2671,18 +2656,11 @@ namespace game_client
             }
             else
             {
-                    Console.WriteLine("Error: Invalid score format"); // закоментовано для збільшення покриття в тестах або інше повідомлення для тестів  MessageBox.Show("Invalid score format", "Error");
-                return;
+                MessageBox.Show("Invalid score format", "Error");
             }
             ResetScore();
             Player1();
         }
-
     }
-    public static class TestEnvironment
-    {
-        public static bool IsTestMode = false; // За замовчуванням false для реального режиму
-    }
-
 }
 

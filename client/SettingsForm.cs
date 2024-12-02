@@ -20,7 +20,7 @@ namespace game_client
     public partial class SettingsForm : Form
     {
         private SoundPlayer _player;
-        
+
         public int Rounds { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <c>SettingsForm</c> class.
@@ -59,11 +59,6 @@ namespace game_client
             panel4.Paint += new PaintEventHandler(DrawCustomBorder);
             panel5.Paint += new PaintEventHandler(DrawCustomBorder);
         }
-        public SoundPlayer GetPlayer()
-        {
-            return _player;
-        }
-
         /// <summary>
         /// Saves the states of the checkboxes and the value in <c>textBox1</c> to the <c>config.ini</c> file.
         /// </summary>
@@ -89,7 +84,7 @@ namespace game_client
         ///     }
         /// }
         /// @endcode
-        public void SaveCheckboxStates()
+        private void SaveCheckboxStates()
         {
             try
             {
@@ -122,7 +117,7 @@ namespace game_client
         ///     SaveCheckboxStates(); // Save checkbox states before the form is closed
         /// }
         /// @endcode
-        public void LoadCheckboxStates()
+        private void LoadCheckboxStates()
         {
             try
             {
@@ -135,7 +130,7 @@ namespace game_client
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"File not found: {ex.Message}");  //MessageBox.Show($"Error loading checkbox states: {ex.Message}");
+                MessageBox.Show($"Error loading checkbox states: {ex.Message}");
             }
 
         }
@@ -155,7 +150,6 @@ namespace game_client
         ///     SaveCheckboxStates(); // Save checkbox states before the form is closed
         /// }
         /// @endcode
-        ///
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
@@ -179,7 +173,7 @@ namespace game_client
         ///     g.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1); // Draw border around the panel
         /// }
         /// @endcode
-        public void DrawCustomBorder(object sender, PaintEventArgs e)
+        private void DrawCustomBorder(object sender, PaintEventArgs e)
         {
             Panel panel = sender as Panel;
             Graphics g = e.Graphics;
@@ -207,7 +201,7 @@ namespace game_client
         ///     }
         /// }
         /// @endcode
-        public void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox3.Checked)
             {
@@ -231,7 +225,7 @@ namespace game_client
         ///     }
         /// }
         /// @endcode
-        public void checkBox3_CheckedChanged(object sender, EventArgs e)
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox2.Checked)
             {
@@ -262,7 +256,7 @@ namespace game_client
         ///     }
         /// }
         /// @endcode
-        public void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
@@ -276,7 +270,5 @@ namespace game_client
                 _player?.Stop();
             }
         }
-        
-
     }
 }
