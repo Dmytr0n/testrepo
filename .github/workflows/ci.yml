@@ -9,23 +9,35 @@ on:
       - '*'
 
 jobs:
-  build:
-    runs-on: windows-latest
+  run-script:
+      runs-on: windows-latest
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Set up .NET Framework 4.7.2
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '16.0' # Visual Studio version
-        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+        with:
+          version: 0.33.1
 
-    - name: Build the project
-      run: msbuild client/gameclient.sln /p:Configuration=Release
-
-    - name: Run tests
-      run: |
-        # Add your test command here
-        dotnet test client/gameclient.csproj
+      - name: doxygen-install
+        uses: ssciwr/doxygen-install@v1.6.0
+            
+      - name: Run CMD script
+        shell: cmd
+        run: |
+          .\run_local_build.bat COM5 9600
+      - name: Upload script results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-results
+          path: ./artefacts
+          
+      - name: Upload Doxygen documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: doxygen-documentation
+          path: ./docs/

@@ -91,7 +91,6 @@ namespace game_client
             this.label4.Size = new System.Drawing.Size(168, 37);
             this.label4.TabIndex = 24;
             this.label4.Text = "Game score:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // panel3
             // 
@@ -193,7 +192,6 @@ namespace game_client
             this.Controls.Add(this.panel1);
             this.Name = "SaveMenu";
             this.Text = "SaveMenu";
-            this.Load += new System.EventHandler(this.SaveMenu_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -213,12 +211,12 @@ namespace game_client
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        public System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.TextBox textBox2;
+        public System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.TextBox textBox3;
+        public System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label4;
     }
 }
