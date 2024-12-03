@@ -1,0 +1,11 @@
+D:\lab5_github\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\lab5_github\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\lab5_github\update\deploy\client\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\lab5_github\update\deploy\client\UnitTestProject1.dll.config
+D:\lab5_github\update\deploy\client\UnitTestProject1.dll
+D:\lab5_github\update\deploy\client\UnitTestProject1.pdb
+D:\lab5_github\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.AssemblyReference.cache
+D:\lab5_github\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CoreCompileInputs.cache
+D:\lab5_github\update\client\UnitTestProject1\obj\Release\UnitTestProject1.csproj.CopyComplete
+D:\lab5_github\update\client\UnitTestProject1\obj\Release\UnitTestProject1.dll
+D:\lab5_github\update\client\UnitTestProject1\obj\Release\UnitTestProject1.pdb
