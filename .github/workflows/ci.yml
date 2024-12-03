@@ -39,7 +39,7 @@ jobs:
     
     - name: Install OpenCover using NuGet
       run: |
-        dotnet add package OpenCover --version 4.7.1223  # Встановлюємо OpenCover як пакет
+        dotnet add client/UnitTestProject1/UnitTestProject1.csproj package OpenCover --version 4.7.1223  # Встановлюємо OpenCover для конкретного проєкту
 
     - name: Run tests with coverage
       run: |
