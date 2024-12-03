@@ -58,12 +58,12 @@ jobs:
 
     # Restore dependencies
     - name: Restore Dependencies
-      run: dotnet restore
+      run: dotnet restore client/gameclient.sln
 
     # Run tests with Coverlet for code coverage
     - name: Run Tests with Coverage
       run: |
-        dotnet test deploy\client\UnitTestProject1.dll --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
+        dotnet test client\UnitTestProject1.dll --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
 
     # Upload code coverage report
     - name: Upload Coverage Report
