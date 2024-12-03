@@ -37,14 +37,10 @@ jobs:
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
     
-    - name: Install OpenCover using NuGet
-      run: |
-        dotnet add client/UnitTestProject1/UnitTestProject1.csproj package OpenCover --version 4.7.1223  # Встановлюємо OpenCover для конкретного проєкту
-
     - name: Run tests with coverage
       run: |
-        # Запускаємо тести з покриттям, використовуючи OpenCover
-        .\packages\OpenCover.4.7.1223\tools\OpenCover.Console.exe -target:"dotnet" -targetargs:"test client\UnitTestProject1\UnitTestProject1.csproj --configuration Debug --no-build --logger trx;LogFileName=test-results.trx" -output:"coverage.xml"
+        .\packages\OpenCover.4.7.1223\tools\OpenCover.Console.exe -target:"dotnet" -targetargs:"test client/UnitTestProject1/UnitTestProject1.csproj --configuration Debug --no-build --logger trx;LogFileName=test-results.trx" -output:"coverage.xml"
+
 
     - name: Upload code coverage to GitHub
       uses: codecov/codecov-action@v3
