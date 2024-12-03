@@ -37,12 +37,38 @@ jobs:
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
     
-    - name: Run tests with coverage
+    - name: Install OpenCover
       run: |
-        .\packages\OpenCover.4.7.1223\tools\OpenCover.Console.exe -target:"dotnet" -targetargs:"test client/UnitTestProject1/UnitTestProject1.csproj --configuration Debug --no-build --logger trx;LogFileName=test-results.trx" -output:"coverage.xml"
+        curl -L https://github.com/OpenCover/opencover/releases/download/v4.7.1223/OpenCover.4.7.1223.zip -o OpenCover.zip
+        Expand-Archive OpenCover.zip -DestinationPath OpenCover
 
+    - name: Install ReportGenerator
+      run: |
+        curl -L https://github.com/danielpalme/ReportGenerator/releases/download/v5.1.0/ReportGenerator.5.1.0.zip -o ReportGenerator.zip
+        Expand-Archive ReportGenerator.zip -DestinationPath ReportGenerator
 
-    - name: Upload code coverage to GitHub
+    - name: Run tests with vstest and OpenCover
+      run: |
+        # Встановлення шляхів
+        set OpenCoverPath=./OpenCover
+        set TestAssembly=client\UnitTestProject1\bin\Debug\UnitTestProject1.dll
+        set CoverageOutput=coverage.xml
+        set ReportOutput=coverage-report
+
+        # Запуск тестів з OpenCover
+        .\OpenCover\OpenCover.Console.exe -register:user -target:"$(Agent.ToolsDirectory)/dotnet/dotnet.exe" -targetargs:"test deploy/client/UnitTestProject1/UnitTestProject1.csproj --configuration Release --no-build" -output:%CoverageOutput% -filter:"+[*]* -[game_client.Properties.Resources]*"
+
+    - name: Generate Code Coverage Report
+      run: |
+        .\ReportGenerator\ReportGenerator.exe -reports:coverage.xml -targetdir:coverage-report -reporttypes:Html
+
+    - name: Upload code coverage report to GitHub
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage-report
+
+    - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: coverage.xml
