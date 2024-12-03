@@ -1050,6 +1050,77 @@ CheckBox3=True");
             // Assert
             Assert.IsTrue(loadForm.listView1.Items.Count >= 0);
         }
+        [TestMethod]
+        public void LoadSavedGames_ShouldPopulateListView_WhenValidIniFile()
+        {
+            // Arrange
+            string iniFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+
+            // Створюємо тестовий INI-файл
+            File.WriteAllText(iniFilePath, @"
+[GameData]
+Game_1_TextBox1=Chess
+Game_1_TextBox2=Player vs Player
+Game_1_TextBox3=5:0
+Game_2_TextBox1=Checkers
+Game_2_TextBox2=AI vs Player
+Game_2_TextBox3=2:3
+");
+
+            var mainForm = new Form1();
+            var loadForm = new LoadForm(mainForm);
+
+            // Act
+            loadForm.LoadSavedGames();
+
+            // Assert
+            Assert.AreEqual(2, loadForm.listView1.Items.Count); // 2 гри мають завантажитися
+            Assert.AreEqual("Chess", loadForm.listView1.Items[0].Text); // Перевірка назви гри
+            Assert.AreEqual("Checkers", loadForm.listView1.Items[1].Text);
+
+            // Clean up
+            File.Delete(iniFilePath); // Видаляємо тестовий INI-файл після тесту
+        }
+        [TestMethod]
+        public void TestSaveCheckboxStates()
+        {
+            // Arrange
+            var settingsForm = new SettingsForm();
+            settingsForm.checkBox1.Checked = true;
+            settingsForm.checkBox2.Checked = false;
+            settingsForm.checkBox3.Checked = true;
+            settingsForm.textBox1.Text = "TestValue";
+
+            // Act
+            settingsForm.SaveCheckboxStates();
+
+            // Assert
+            var ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
+            Assert.AreEqual("True", ini.Read("CheckboxStates", "CheckBox1"));
+            Assert.AreEqual("False", ini.Read("CheckboxStates", "CheckBox2"));
+            Assert.AreEqual("True", ini.Read("CheckboxStates", "CheckBox3"));
+            Assert.AreEqual("TestValue", ini.Read("TextBoxValues", "TextBox1"));
+        }
+        [TestMethod]
+        public void TestLoadCheckboxStates()
+        {
+            // Arrange
+            var settingsForm = new SettingsForm();
+            var ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
+            ini.Write("CheckboxStates", "CheckBox1", "True");
+            ini.Write("CheckboxStates", "CheckBox2", "False");
+            ini.Write("CheckboxStates", "CheckBox3", "True");
+            ini.Write("TextBoxValues", "TextBox1", "LoadedValue");
+
+            // Act
+            settingsForm.LoadCheckboxStates();
+
+            // Assert
+            Assert.IsTrue(settingsForm.checkBox1.Checked);
+            Assert.IsFalse(settingsForm.checkBox2.Checked);
+            Assert.IsTrue(settingsForm.checkBox3.Checked);
+            Assert.AreEqual("LoadedValue", settingsForm.textBox1.Text);
+        }
     }
 }
 
