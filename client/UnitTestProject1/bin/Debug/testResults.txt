@@ -6550,3 +6550,27 @@ Pass: panel2 is visible.
 Pass: button2 is visible.
 Pass: button3 is visible.
 Pass: button4 is visible.
+Test run at 03.12.2024 22:02:36
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
+Test run at 03.12.2024 22:04:42
+Pass: button1 is hidden.
+Pass: button22 is hidden.
+Pass: button21 is hidden.
+Pass: panel17 is hidden.
+Pass: pictureBox15 is hidden.
+Pass: label2 is visible.
+Pass: panel1 is visible.
+Pass: panel2 is visible.
+Pass: button2 is visible.
+Pass: button3 is visible.
+Pass: button4 is visible.
