@@ -889,6 +889,61 @@ CheckBox3=True");
             // Cleanup: видалення тимчасового файлу
             File.Delete(tempIniFile);
         }
+        [TestMethod]
+        public void Read_ReturnsCorrectValue_WhenKeyExists()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
+
+            // Act
+            string actualValue = iniFile.Read("TestSection", "TestKey", "DefaultValue");
+
+            // Assert
+            Assert.AreEqual("TestValue", actualValue);
+        }
+
+        [TestMethod]
+        public void Read_ReturnsDefaultValue_WhenKeyDoesNotExist()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
+
+            // Act
+            string actualValue = iniFile.Read("TestSection", "NonExistingKey", "DefaultValue");
+
+            // Assert
+            Assert.AreEqual("DefaultValue", actualValue);
+        }
+
+        [TestMethod]
+        public void Read_ReturnsDefaultValue_WhenSectionDoesNotExist()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
+
+            // Act
+            string actualValue = iniFile.Read("NonExistingSection", "TestKey", "DefaultValue");
+
+            // Assert
+            Assert.AreEqual("DefaultValue", actualValue);
+        }
+
+        [TestMethod]
+        public void Write_WritesValueCorrectly()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
+            string section = "NewSection";
+            string key = "NewKey";
+            string value = "NewValue";
+
+            // Act
+            iniFile.Write(section, key, value);
+            string actualValue = iniFile.Read(section, key, "DefaultValue");
+
+            // Assert
+            Assert.AreEqual(value, actualValue);
+        }
 
 
 
