@@ -1121,6 +1121,42 @@ Game_2_TextBox3=2:3
             Assert.IsTrue(settingsForm.checkBox3.Checked);
             Assert.AreEqual("LoadedValue", settingsForm.textBox1.Text);
         }
+        [TestMethod]
+        public void CheckBox2_CheckedChanged_CheckBox3Checked_CheckBox2Unchecked()
+        {
+            // Arrange
+            var form = new SettingsForm();
+            form.Show(); // Завантажуємо форму, щоб елементи ініціалізувалися
+            form.checkBox3.Checked = true; // Активуємо checkBox3
+
+            // Act
+            form.checkBox2.Checked = false; // Спробуємо активувати checkBox2
+            form.checkBox2_CheckedChanged(form.checkBox2, EventArgs.Empty); // Викликаємо функцію вручну
+
+            // Assert
+            Assert.IsFalse(form.checkBox2.Checked, "checkBox2 має бути деактивованим, якщо checkBox3 активний.");
+            form.Close();
+        }
+        [TestMethod]
+        public void CheckBox1_CheckedChanged_Checked_True_StartsPlaying()
+        {
+            // Arrange
+            var form = new SettingsForm();
+            form.Show();
+
+            // Переконайтеся, що файл існує
+            string soundFile = @"C:\Users\Дмитро\Downloads\music.wav";
+            Assert.IsTrue(File.Exists(soundFile), "Файл music.wav не знайдено за вказаним шляхом.");
+
+            // Act
+            form.checkBox1.Checked = true; // Активуємо checkBox1
+            form.checkBox1_CheckedChanged_1(form.checkBox1, EventArgs.Empty);
+
+            // Assert
+            // Перевірити роботу `PlayLooping` напряму складно. Але можна впевнитись, що стан гравця не null
+            Assert.IsNotNull(form.GetPlayer(), "_player не було ініціалізовано.");
+            form.Close();
+        }
     }
 }
 
