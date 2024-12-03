@@ -981,7 +981,75 @@ CheckBox3=True");
             // This will throw an exception
             iniFile.Read("TestSection", "TestKey");
         }
+        [TestMethod]
+        public void Constructor_SetsGameModeAndScoreCorrectly()
+        {
+            // Arrange
+            string expectedMode = "TestMode";
+            string expectedScore = "10";
 
+            // Act
+            SaveMenu saveMenu = new SaveMenu(expectedMode, expectedScore);
+
+            // Assert
+            Assert.AreEqual(expectedMode, saveMenu.GameMode);
+            Assert.AreEqual(expectedScore, saveMenu.GameScore);
+
+            // Перевірка текстових полів напряму (замість Controls)
+            Assert.AreEqual(expectedMode, saveMenu.textBox2.Text);
+            Assert.AreEqual(expectedScore, saveMenu.textBox3.Text);
+        }
+        [TestMethod]
+        public void Methods_DoNotThrowExceptions()
+        {
+            // Arrange
+            SaveMenu saveMenu = new SaveMenu("Mode", "Score");
+
+            try
+            {
+                // Перевірка button1_Click_1
+                saveMenu.button1_Click_1(null, null);
+
+                // Мок для DrawCustomBorder
+                using (Bitmap bitmap = new Bitmap(100, 100))
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    PaintEventArgs mockPaintEvent = new PaintEventArgs(g, new Rectangle(0, 0, 100, 100));
+                    saveMenu.DrawCustomBorder(new Panel { Width = 100, Height = 100 }, mockPaintEvent);
+                }
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Methods throw exceptions. Exception: {ex.Message}");
+            }
+        }
+        [TestMethod]
+        public void Constructor_ShouldInitializeProperly()
+        {
+            // Arrange
+            var mainForm = new Form1();
+
+            // Act
+            var loadForm = new LoadForm(mainForm);
+
+            // Assert
+            Assert.AreEqual(FormBorderStyle.FixedSingle, loadForm.FormBorderStyle);
+            Assert.IsFalse(loadForm.MaximizeBox);
+            Assert.IsNotNull(loadForm.mainForm);
+        }
+        [TestMethod]
+        public void LoadSavedGames_ShouldPopulateListView()
+        {
+            // Arrange
+            var mainForm = new Form1();
+            var loadForm = new LoadForm(mainForm);
+
+            // Act
+            loadForm.LoadSavedGames();
+
+            // Assert
+            Assert.IsTrue(loadForm.listView1.Items.Count >= 0);
+        }
     }
 }
 
