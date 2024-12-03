@@ -1277,6 +1277,81 @@ Game_2_TextBox3=2:3
             Application.Exit();
             applicationThread.Wait();  // чекаємо завершення потоку
         }
+        private SerialPort _serialPort;
+        [TestMethod]
+        public void MainForm_FormClosing_DoesNotCloseSerialPort_WhenAlreadyClosed()
+        {
+            _serialPort = new SerialPort("COM5"); // Вказуємо будь-який COM порт
+            _form.serialPort = _serialPort; // Призначаємо serialPort у форму
+            // Переконуємось, що порт закритий перед тестом
+            Assert.IsFalse(_serialPort.IsOpen);
+
+            // Викликаємо обробник події FormClosing
+            _form.MainForm_FormClosing(this, new FormClosingEventArgs(CloseReason.UserClosing, false));
+
+            // Перевіряємо, що порт все ще закритий (нічого не змінилось)
+            Assert.IsFalse(_serialPort.IsOpen);
+        }
+        [TestMethod]
+        public void MainForm_FormClosing_ClosesSerialPort_WhenOpen()
+        {
+
+            _form = new Form1();
+            _serialPort = new SerialPort("COM5"); // Вказуємо будь-який COM порт
+            _form.serialPort = _serialPort; // Призначаємо serialPort у форму
+            _serialPort.Open(); // Відкриваємо порт
+            // Перевіряємо, що порт відкритий перед закриттям форми
+            Assert.IsTrue(_serialPort.IsOpen);
+
+            // Викликаємо обробник події FormClosing
+            _form.MainForm_FormClosing(this, new FormClosingEventArgs(CloseReason.UserClosing, false));
+
+            // Перевіряємо, що порт закритий після виклику методу
+            Assert.IsFalse(_serialPort.IsOpen);
+        }
+        [TestMethod]
+        public void Player2_ShouldStartTimerAndClickButtonForManVSAI_WithRandomMode()
+        {
+            // Arrange
+            var form = new TestForm1();
+
+            // Встановлюємо необхідні параметри
+            form.SetTestRandom(1); // Встановлюємо фіксоване значення для випадкових чисел
+            form.mode = "Man VS AI"; // Встановлюємо режим Man VS AI
+            form.randomMode = true; // Включаємо випадковий режим
+            form.winStrategy = false; // Вимикаємо стратегію виграшу
+
+            // Act
+            form.Player2(); // Викликаємо метод Player2, щоб ініціювати логіку
+                            // Затримка для того, щоб таймер мав час запуститися
+            System.Threading.Thread.Sleep(200);
+
+            // Assert
+            // Перевірка, чи таймер був ініціалізований і запущений
+            Assert.IsNotNull(form.TestTimer, "Таймер не був ініціалізований.");
+            Assert.IsTrue(form.TestTimer.Enabled, "Таймер не був запущений.");
+        }
+
+        [TestMethod]
+        public void Player2_ShouldStartTimerAndClickButtonForAI_VS_AI_WithWinStrategy()
+        {
+            // Arrange
+            var form = new TestForm1();
+            form.mode = "AI VS AI";  // Встановлюємо режим AI VS AI
+            form.randomMode = false;
+            form.winStrategy = true; // Включаємо стратегію виграшу
+            form.player1Moves.AddRange(new[] { 1, 2, 3, 1, 2, 2, 3 });
+
+            // Act
+            form.Player2(); // Викликаємо метод Player2, щоб ініціювати логіку
+                            // Затримка для того, щоб таймер мав час запуститися
+            System.Threading.Thread.Sleep(200);
+
+            // Assert
+            // Перевірка, чи таймер був ініціалізований і запущений
+            Assert.IsNotNull(form.TestTimer, "Таймер не був ініціалізований.");
+            Assert.IsTrue(form.TestTimer.Enabled, "Таймер не був запущений.");
+        }
     }
 }
 
