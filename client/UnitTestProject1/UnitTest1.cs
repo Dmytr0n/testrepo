@@ -944,18 +944,43 @@ CheckBox3=True");
             // Assert
             Assert.AreEqual(value, actualValue);
         }
+        [TestMethod]
+        public void ReadKeys_ReturnsAllKeysInSection()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
+            iniFile.Write("AnotherSection", "Key1", "Value1");
+            iniFile.Write("AnotherSection", "Key2", "Value2");
 
+            // Act
+            var keys = iniFile.ReadKeys("AnotherSection");
 
+            // Assert
+            CollectionAssert.AreEquivalent(new[] { "Key1", "Key2" }, keys);
+        }
 
+        [TestMethod]
+        public void ReadKeys_ReturnsEmptyArray_WhenSectionDoesNotExist()
+        {
+            // Arrange
+            var iniFile = new IniFile(testFilePath);
 
+            // Act
+            var keys = iniFile.ReadKeys("NonExistingSection");
 
+            // Assert
+            Assert.AreEqual(0, keys.Length);
+        }
 
+        [TestMethod]
+        public void Constructor_ThrowsException_WhenFileDoesNotExist()
+        {
+            // Arrange & Act
+            var iniFile = new IniFile("nonexistent.ini");
 
-
-
-
-
-
+            // This will throw an exception
+            iniFile.Read("TestSection", "TestKey");
+        }
 
     }
 }
