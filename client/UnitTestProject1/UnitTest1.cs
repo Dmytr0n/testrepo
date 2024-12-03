@@ -1145,7 +1145,7 @@ Game_2_TextBox3=2:3
             form.Show();
 
             // Переконайтеся, що файл існує
-            string soundFile = @"C:\Users\Дмитро\Downloads\music.wav";
+            string soundFile = @"./media\audio\music.wav";
             Assert.IsTrue(File.Exists(soundFile), "Файл music.wav не знайдено за вказаним шляхом.");
 
             // Act
