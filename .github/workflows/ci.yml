@@ -29,12 +29,6 @@ jobs:
       - name: Setup VSTest.console.exe
         uses: darenm/Setup-VSTest@v1.3
             
-      
-      - name: Run tests using vstest.console.exe
-        run: |
-              vstest.console.exe /?
-
-            
       - name: Run CMD script
         shell: cmd
         run: |
@@ -49,4 +43,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: doxygen-documentation
-          path: ./docs/
+          path: ./deploy/documentation/
+
+      - name: Upload Coverage as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-artifacts
+          path: ./deploy/test_coverage/
