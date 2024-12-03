@@ -40,11 +40,7 @@ jobs:
     - name: Run Tests with Coverage using Coverlet
       run: |
         dotnet tool install --global coverlet.console
-        coverlet client/UnitTestProject1/bin/Debug/net7.0/UnitTestProject1.dll \
-          --target "dotnet" \
-          --targetargs "test client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" \
-          --format opencover \
-          --output TestResults/coverage.opencover.xml
+        coverlet client/UnitTestProject1/bin/Debug/net7.0/UnitTestProject1.dll --target "dotnet" --targetargs "test client/UnitTestProject1/UnitTestProject1.csproj" --format opencover --output TestResults/coverage.opencover.xml
     
     - name: Upload test results as artifact
       uses: actions/upload-artifact@v3
