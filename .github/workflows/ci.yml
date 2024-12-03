@@ -40,12 +40,12 @@ jobs:
     - name: Install OpenCover
       run: |
         curl -L https://github.com/OpenCover/opencover/releases/download/v4.7.1223/OpenCover.4.7.1223.zip -o OpenCover.zip
-        Expand-Archive OpenCover.zip -DestinationPath OpenCover
+        Expand-Archive OpenCover.zip -DestinationPath ./OpenCover
 
     - name: Install ReportGenerator
       run: |
         curl -L https://github.com/danielpalme/ReportGenerator/releases/download/v5.1.0/ReportGenerator.5.1.0.zip -o ReportGenerator.zip
-        Expand-Archive ReportGenerator.zip -DestinationPath ReportGenerator
+        Expand-Archive ReportGenerator.zip -DestinationPath ./ReportGenerator
 
     - name: Run tests with vstest and OpenCover
       run: |
