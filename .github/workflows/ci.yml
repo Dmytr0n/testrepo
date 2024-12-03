@@ -25,6 +25,11 @@ jobs:
 
       - name: doxygen-install
         uses: ssciwr/doxygen-install@v1.6.0
+      
+      - name: Run tests using vstest.console.exe
+        run: |
+              vstest.console.exe /?
+
             
       - name: Run CMD script
         shell: cmd
