@@ -50,7 +50,7 @@ jobs:
   
       - name: Run tests with coverage
         run: |
-              dotnet test deploy\client\UnitTestProject1.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage/
+              dotnet test deploy\client\UnitTestProject1.dll /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage/
          
       - name: Generate coverage report
         run: |
