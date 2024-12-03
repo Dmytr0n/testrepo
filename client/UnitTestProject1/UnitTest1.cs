@@ -860,7 +860,35 @@ namespace testingMenu
             // Тестова перевірка: чи не виникла помилка в процесі малювання
             Assert.IsNotNull(paintEventArgs.Graphics);
         }
+        [TestMethod]
+        public void StartMenu_IniFileValues_SetCorrectStates()
+        {
+            // Arrange: створення тимчасового INI-файлу
+            string tempIniFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            File.WriteAllText(tempIniFile, @"
+[CheckboxStates]
+CheckBox1=True
+CheckBox2=False
+CheckBox3=True");
 
+            var form = new Form1();
+
+            // Act: виклик функції
+            form.StartMenu();
+
+            // Assert: перевірка станів
+            Assert.IsTrue(form.musicOn, "musicOn should be true.");
+            Assert.IsFalse(form.winStrategy, "winStrategy should be false.");
+            Assert.IsTrue(form.randomMode, "randomMode should be true.");
+
+            // Перевірка видимості елементів
+            Assert.IsFalse(form.label2.Visible, "label2 should be hidden.");
+            Assert.IsFalse(form.panel1.Visible, "panel1 should be hidden.");
+            Assert.IsFalse(form.panel2.Visible, "panel2 should be hidden.");
+
+            // Cleanup: видалення тимчасового файлу
+            File.Delete(tempIniFile);
+        }
 
 
 
