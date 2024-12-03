@@ -1,4 +1,4 @@
-name: Build and Test C# App
+name: Build C# GUI App
 
 on:
   push:
@@ -9,31 +9,35 @@ on:
       - '*'
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  run-script:
+      runs-on: windows-latest
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '7.0.x' # Замість '7.0.x' вкажіть вашу версію .NET SDK
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+        with:
+          version: 0.33.1
 
-    - name: Restore Dependencies
-      run: dotnet restore client/gameclient.sln
-
-    - name: Build Project
-      run: dotnet build client/gameclient.sln --configuration Debug
-
-    - name: Run Tests with Coverage
-      run: |
-        dotnet test client/gameclient.sln --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
-
-    - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage-report
-        path: TestResults/coverage/
-
+      - name: doxygen-install
+        uses: ssciwr/doxygen-install@v1.6.0
+            
+      - name: Run CMD script
+        shell: cmd
+        run: |
+          .\run_local_build.bat COM5 9600
+      - name: Upload script results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-results
+          path: ./artefacts
+          
+      - name: Upload Doxygen documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: doxygen-documentation
+          path: ./docs/
