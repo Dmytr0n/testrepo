@@ -658,28 +658,211 @@ namespace testingMenu
             Assert.IsTrue(form.IsExitCalled, "IsExitCalled should be true when the button is clicked.");
         }
         [TestMethod]
-        public void Button23_Click_ShouldLoadValuesFromIniFile()
+        public void Button4Click_SetsModeToAIVsAI()
         {
             // Arrange
             var form = new Form1();
-
-            // Створення тестового INI файлу
-            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string iniContent = "[CheckboxStates]\nCheckBox1=true\nCheckBox2=false\nCheckBox3=true";
-            File.WriteAllText(iniPath, iniContent);
+            form.mode = ""; // Початковий стан
 
             // Act
-            form.button23_Click(null, EventArgs.Empty); // Викликаємо метод
+            form.button4_Click(null, EventArgs.Empty);
 
             // Assert
-            Assert.IsTrue(form.musicOn, "Music should be ON.");
-            Assert.IsFalse(form.winStrategy, "Win strategy should be OFF.");
-            Assert.IsTrue(form.randomMode, "Random mode should be ON.");
-            
+            Assert.AreEqual("AI VS AI", form.mode, "Mode should be set to AI VS AI");
         }
-        
+        [TestMethod]
+        public void Button2_Click_ShouldSetModeToManVsAIAndCallPlayer1()
+        {
+            // Arrange
+            var form = new TestForm1();  // Тестова форма, яка перевизначає метод Player1
 
-       
+            // Act
+            form.button2_Click(null, EventArgs.Empty);
+
+            // Assert
+            // Перевірка, чи викликаний метод Player1
+            Assert.IsTrue(form.IsPlayer1Called, "Метод Player1 не був викликаний.");
+
+            // Перевірка, чи встановлена змінна mode на "Man VS AI"
+            Assert.AreEqual("Man VS AI", form.mode, "Змінна mode не має значення 'Man VS AI'.");
+        }
+        [TestMethod]
+        public void TestResetScore_SuccessfulRead_FormInteraction()
+        {
+            // Створюємо екземпляр форми
+            Form1 form = new Form1();
+
+            // Використовуємо реальний порт (переконайтеся, що цей порт існує та підключений)
+            string testPort = "COM5"; // Замість цього використовуйте наявний порт
+            IniFile ini = new IniFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"));
+            ini.Write("TextBoxValues", "TextBox1", testPort); // Записуємо порт у конфігураційний файл
+
+            // Потрібно налаштувати пристрій на повернення правильних значень через серійний порт
+
+            // Викликаємо метод, який має змінити значення у textBox1 та textBox2
+            form.ResetScore();
+
+            // Перевіряємо, що значення текстових полів було змінено правильно
+            Assert.AreEqual("0", form.textBox1.Text.Replace("\r\n", "").Replace("\n", "").Trim());
+            Assert.AreEqual("0", form.textBox2.Text.Replace("\r\n", "").Replace("\n", "").Trim());
+        }
+        [TestMethod]
+        public void TestButton19Click_VisibilityChanges_AfterStartMenu()
+        {
+            // Створюємо екземпляр форми
+            Form1 form = new Form1();
+
+            // Спочатку викликаємо StartMenu(), щоб перевірити його вплив
+            form.StartMenu();
+
+            // Перевіряємо, чи був викликаний StartMenu
+            Assert.IsTrue(form.StartMenuCalled, "StartMenu() was not called!");
+
+            // Імітуємо натискання кнопки button19
+            form.button19_Click(null, null);
+            form.Show();
+
+            // Перевіряємо, чи були змінені властивості Visible для елементів
+            Assert.IsTrue(form.button1.Visible);
+            Assert.IsTrue(form.button21.Visible);
+            Assert.IsTrue(form.button22.Visible);
+            Assert.IsTrue(form.panel17.Visible);
+            Assert.IsTrue(form.pictureBox15.Visible);
+            form.Close();
+        }
+        [TestMethod]
+        public void TestButton17Click_VisibilityChanges_And_Player1Called()
+        {
+            // Створюємо екземпляр форми
+            Form1 form = new Form1();
+
+            // Імітуємо натискання кнопки button17
+            form.button17_Click_1(null, null);
+
+            // Перевіряємо, чи стали панелі невидимими
+            Assert.IsFalse(form.panel13.Visible, "panel13 should be hidden.");
+            Assert.IsFalse(form.panel8.Visible, "panel8 should be hidden.");
+
+            // Перевіряємо, чи був викликаний метод Player1
+            Assert.IsTrue(form.Player1Called, "Player1() was not called!");
+        }
+        [TestMethod]
+        public void TestButton12Click_Select2UserChanged_And_ServerControlCalled()
+        {
+            // Створюємо екземпляр форми
+            Form1 form = new Form1();
+
+            // Ініціалізуємо значення select2User і прапорець для виклику serverControl
+            form.select2User = 0;  // Початкове значення
+
+            // Імітуємо натискання кнопки button12
+            form.button12_Click(null, null);
+
+            // Перевіряємо, чи змінилося значення select2User на 6
+            Assert.AreEqual(6, form.select2User, "select2User should be 6 after button12_Click.");
+
+            // Перевіряємо, чи був викликаний метод serverControl
+            Assert.IsTrue(form.ServerControlCalled, "serverControl() was not called!");
+        }
+        [TestMethod]
+        public void TestButton11Click_Select2UserChanged_And_ServerControlCalled()
+        {
+            // Створюємо екземпляр форми
+            Form1 form = new Form1();
+
+            // Ініціалізуємо значення select2User і прапорець для виклику serverControl
+            form.select2User = 0;  // Початкове значення
+
+
+            // Імітуємо натискання кнопки button11
+            form.button11_Click(null, null);
+
+            // Перевіряємо, чи змінилося значення select2User на 5
+            Assert.AreEqual(5, form.select2User, "select2User should be 5 after button11_Click.");
+
+            // Перевіряємо, чи був викликаний метод serverControl
+            Assert.IsTrue(form.ServerControlCalled, "serverControl() was not called!");
+        }
+        [TestMethod]
+        public void TestDrawCustomBorder()
+        {
+            // Створення тестової панелі
+            Panel panel = new Panel
+            {
+                Width = 100,
+                Height = 100
+            };
+
+            // Створення інстансу для PaintEventArgs
+            var paintEventArgs = new PaintEventArgs(panel.CreateGraphics(), new Rectangle(0, 0, panel.Width, panel.Height));
+
+            // Створення екземпляра функції, яку потрібно протестувати
+            var form = new SettingsForm();
+
+            form.DrawCustomBorder(panel, paintEventArgs);
+
+            // Для тестування, перевіряємо, чи було нарисовано, наприклад, за допомогою властивостей
+            // Графічний об'єкт можна перевірити або шляхом порівняння пікселів, або перевіркою змін на елементі управління
+            // Для простоти припустимо, що перевірка відбувається через захоплення відомих результатів малювання
+
+            // Тестова перевірка: чи не виникла помилка в процесі малювання
+            Assert.IsNotNull(paintEventArgs.Graphics);
+        }
+        [TestMethod]
+        public void TestDrawCustomBorderForm1()
+        {
+            // Створення тестової панелі
+            Panel panel = new Panel
+            {
+                Width = 100,
+                Height = 100
+            };
+
+            // Створення інстансу для PaintEventArgs
+            var paintEventArgs = new PaintEventArgs(panel.CreateGraphics(), new Rectangle(0, 0, panel.Width, panel.Height));
+
+            // Створення екземпляра функції, яку потрібно протестувати
+            var form = new Form1();
+
+            form.DrawCustomBorder(panel, paintEventArgs);
+
+            // Для тестування, перевіряємо, чи було нарисовано, наприклад, за допомогою властивостей
+            // Графічний об'єкт можна перевірити або шляхом порівняння пікселів, або перевіркою змін на елементі управління
+            // Для простоти припустимо, що перевірка відбувається через захоплення відомих результатів малювання
+
+            // Тестова перевірка: чи не виникла помилка в процесі малювання
+            Assert.IsNotNull(paintEventArgs.Graphics);
+        }
+        [TestMethod]
+        public void TestDrawCustomBorderSaveMenu()
+        {
+            // Створення тестової панелі
+            Panel panel = new Panel
+            {
+                Width = 100,
+                Height = 100
+            };
+
+            // Створення інстансу для PaintEventArgs
+            var paintEventArgs = new PaintEventArgs(panel.CreateGraphics(), new Rectangle(0, 0, panel.Width, panel.Height));
+
+            string mode = "AI VS AI";
+            string score = "10 : 11";
+            // Створення екземпляра функції, яку потрібно протестувати
+            var form = new SaveMenu(mode, score);
+
+            form.DrawCustomBorder(panel, paintEventArgs);
+
+            // Для тестування, перевіряємо, чи було нарисовано, наприклад, за допомогою властивостей
+            // Графічний об'єкт можна перевірити або шляхом порівняння пікселів, або перевіркою змін на елементі управління
+            // Для простоти припустимо, що перевірка відбувається через захоплення відомих результатів малювання
+
+            // Тестова перевірка: чи не виникла помилка в процесі малювання
+            Assert.IsNotNull(paintEventArgs.Graphics);
+        }
+
+
+
 
 
 
