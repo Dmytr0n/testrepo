@@ -25,6 +25,10 @@ jobs:
 
       - name: doxygen-install
         uses: ssciwr/doxygen-install@v1.6.0
+
+      - name: Setup VSTest.console.exe
+        uses: darenm/Setup-VSTest@v1.3
+            
       
       - name: Run tests using vstest.console.exe
         run: |
