@@ -225,7 +225,6 @@ dotnet test deploy\client\UnitTestProject1.dll --logger "trx;LogFileName=%client
 if %errorlevel% neq 0 (
     echo Client tests failed.
     set step7Status=FAILED
-    goto FinalReport
 ) else (
     echo Client tests completed successfully.
     set step7Status=PASSED
@@ -379,7 +378,6 @@ REM Check if the coverage report generation was successful
 if %errorlevel% neq 0 (
     echo Error: Failed to generate coverage report.
     set step11Status=FAILED
-    goto FinalReport
 ) else (
     echo Code coverage report generated successfully.
     set step11Status=PASSED
