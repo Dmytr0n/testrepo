@@ -363,7 +363,7 @@ echo Step 11: Running Unit Test Coverage...
 REM Define relative paths for coverage tools
 set OpenCoverPath=.\Tools\OpenCover
 set ReportGeneratorPath=.\Tools\ReportGenerator\net47
-set TestRunnerPath="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
+set TestRunnerPath="vstest.console.exe"
 set TestAssembly=.\deploy\client\UnitTestProject1.dll
 set CoverageOutput=.\deploy\test_coverage\coverage.xml
 set ReportOutput=.\deploy\test_coverage\coverage-report
