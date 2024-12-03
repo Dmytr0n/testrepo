@@ -10,62 +10,59 @@ on:
 
 jobs:
   run-script:
-      runs-on: windows-latest
-      steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1
 
-      - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
-        with:
-          version: 0.33.1
+    - name: Set up Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+      with:
+        version: 0.33.1
 
-      - name: doxygen-install
-        uses: ssciwr/doxygen-install@v1.6.0
-            
-      - name: Run CMD script
-        shell: cmd
-        run: |
-          .\run_local_build.bat COM5 9600
-      - name: Upload script results as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: script-results
-          path: ./artefacts
-          
-      - name: Upload Doxygen documentation as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: doxygen-documentation
-          path: ./docs/
+    - name: doxygen-install
+      uses: ssciwr/doxygen-install@v1.6.0
+
+    - name: Run CMD script
+      shell: cmd
+      run: |
+        .\run_local_build.bat COM5 9600
+
+    - name: Upload script results as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: script-results
+        path: ./artefacts
+
+    - name: Upload Doxygen documentation as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: doxygen-documentation
+        path: ./docs/
     
   test:
     runs-on: ubuntu-latest
+    needs: run-script # Залежність від run-script
 
     steps:
-    # Checkout the repository
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Setup .NET
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '7.0.x' # Вкажіть вашу версію .NET SDK
 
-    # Restore dependencies
     - name: Restore Dependencies
       run: dotnet restore client/gameclient.sln
 
-    # Run tests with Coverlet for code coverage
     - name: Run Tests with Coverage
       run: |
-        dotnet test client\UnitTestProject1.dll --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
+        dotnet test deploy\client\UnitTestProject1.dll --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
 
-    # Upload code coverage report
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v3
       with:
