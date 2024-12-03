@@ -516,6 +516,10 @@ namespace testingMenu
             _form = new Form1();
             TestEnvironment.IsTestMode = true; // Встановлюємо в тестовий режим
             // Створюємо тимчасовий INI-файл для тестування
+            testFilePath = Path.Combine(Path.GetTempPath(), "test.ini");
+            File.WriteAllText(testFilePath, "[TestSection]\nTestKey=TestValue\n");
+            // Створюємо шлях до тимчасового конфігураційного файлу
+            _configFilePath = Path.Combine(Path.GetTempPath(), "config.ini");
         }
 
         [TestMethod]
@@ -597,9 +601,83 @@ namespace testingMenu
             Assert.AreEqual(4, _form.score2);
             Assert.IsTrue(_form.onLoad);
         }
+        [TestMethod]
+        public void Button21_Click_CreatesLoadForm()
+        {
+            // Arrange
+            var form = new Form1();
+
+            // Act
+            form.button21_Click(null, null); // Викликаємо метод кнопки
+
+            // Assert
+            var loadForm = Application.OpenForms.OfType<LoadForm>().FirstOrDefault(); // Перевіряємо, чи є відкритою форма LoadForm
+            Assert.IsNotNull(loadForm); // Перевірка, що LoadForm була відкрита
+            loadForm.Close();
+        }
+        [TestMethod]
+        public void Button18_Click_ShouldCreateAndShowSaveMenu()
+        {
+
+            // Створення форми для тестування (Form1 — це ваша форма, в якій реалізовано button18_Click)
+            var form = new Form1();
+
+            // Мокування textBox1 і textBox2
+            var textBox1 = new TextBox();
+            var textBox2 = new TextBox();
+            textBox1.Text = "10"; // Текст для першого текстового поля
+            textBox2.Text = "20"; // Текст для другого текстового поля
+
+
+
+            // Act: Викликаємо метод button18_Click на екземплярі форми
+            form.button18_Click(null, null);
+
+            // Оскільки форма `SaveMenu` відкривається в новому вікні, треба трохи зачекати для того, щоб вона відобразилась
+            Application.DoEvents();
+
+            // Assert: Перевіряємо, чи була відкрита форма SaveMenu
+            var saveMenu = Application.OpenForms.OfType<SaveMenu>().FirstOrDefault();
+            // Додавання textBox до форми
+            saveMenu.Controls.Add(textBox1);
+            saveMenu.Controls.Add(textBox2);
+            // Перевіряємо, чи була створена форма SaveMenu
+            Assert.IsNotNull(saveMenu, "SaveMenu was not created.");
+            saveMenu.Close();
+        }
+        [TestMethod]
+        public void Button22_Click_ShouldSetIsExitCalledToTrue()
+        {
+            // Arrange
+            var form = new Form1();
+
+            // Act
+            form.button22_Click(null, EventArgs.Empty);
+
+            // Assert
+            Assert.IsTrue(form.IsExitCalled, "IsExitCalled should be true when the button is clicked.");
+        }
+        [TestMethod]
+        public void Button23_Click_ShouldLoadValuesFromIniFile()
+        {
+            // Arrange
+            var form = new Form1();
+
+            // Створення тестового INI файлу
+            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            string iniContent = "[CheckboxStates]\nCheckBox1=true\nCheckBox2=false\nCheckBox3=true";
+            File.WriteAllText(iniPath, iniContent);
+
+            // Act
+            form.button23_Click(null, EventArgs.Empty); // Викликаємо метод
+
+            // Assert
+            Assert.IsTrue(form.musicOn, "Music should be ON.");
+            Assert.IsFalse(form.winStrategy, "Win strategy should be OFF.");
+            Assert.IsTrue(form.randomMode, "Random mode should be ON.");
+            
+        }
         
-        
-       
 
        
 
