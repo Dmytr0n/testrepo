@@ -37,9 +37,14 @@ jobs:
       run: |
         dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
     
-    - name: Run Tests with Coverage
+    - name: Run Tests with Coverage using Coverlet
       run: |
-        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
+        dotnet tool install --global coverlet.console
+        coverlet client/UnitTestProject1/bin/Debug/net7.0/UnitTestProject1.dll \
+          --target "dotnet" \
+          --targetargs "test client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" \
+          --format opencover \
+          --output TestResults/coverage.opencover.xml
     
     - name: Upload test results as artifact
       uses: actions/upload-artifact@v3
