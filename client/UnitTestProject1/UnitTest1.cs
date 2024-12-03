@@ -1157,6 +1157,104 @@ Game_2_TextBox3=2:3
             Assert.IsNotNull(form.GetPlayer(), "_player не було ініціалізовано.");
             form.Close();
         }
+        [TestMethod]
+        public void CheckBox1_CheckedChanged_Checked_False_StopsPlaying()
+        {
+            // Arrange
+            var form = new SettingsForm();
+            form.Show();
+
+
+
+            form.checkBox1.Checked = false; // Деактивуємо checkBox1
+            form.checkBox1_CheckedChanged_1(form.checkBox1, EventArgs.Empty);
+
+            // Assert
+            Assert.IsNull(form.GetPlayer(), "_player мав бути зупинений і очищений.");
+            form.Close();
+        }
+        [TestMethod]
+        public void DrawCustomBorder_ShouldDrawCorrectBorder()
+        {
+            // Arrange
+            var panel = new Panel { Width = 100, Height = 100 };
+            var bitmap = new Bitmap(100, 100); // Create a Bitmap to capture the drawing
+            var paintEventArgs = new PaintEventArgs(Graphics.FromImage(bitmap), new Rectangle(0, 0, 100, 100));
+            // Ініціалізація форми
+            var mainForm = new Form1();
+            var loadForm = new LoadForm(mainForm);
+            // Act
+            loadForm.DrawCustomBorder(panel, paintEventArgs);
+
+            // Assert
+            Color expectedColor = Color.Aqua;
+
+            // Check pixels at the four corners and edges of the image
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(0, 0)); // Top-left corner
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(99, 0)); // Top-right corner
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(0, 99)); // Bottom-left corner
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(99, 99)); // Bottom-right corner
+
+            // Optionally check some pixels along the edges to ensure the border is drawn
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(50, 0)); // Top edge
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(50, 99)); // Bottom edge
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(0, 50)); // Left edge
+            AssertColorsAreEqual(expectedColor, bitmap.GetPixel(99, 50)); // Right edge
+        }
+
+        private void AssertColorsAreEqual(Color expected, Color actual)
+        {
+            Assert.AreEqual(expected.A, actual.A, "Alpha mismatch");
+            Assert.AreEqual(expected.R, actual.R, "Red mismatch");
+            Assert.AreEqual(expected.G, actual.G, "Green mismatch");
+            Assert.AreEqual(expected.B, actual.B, "Blue mismatch");
+        }
+        [TestMethod]
+        public void TestButton1Click()
+        {
+            // Arrange
+            bool onLoadBeforeClick = _form.onLoad;
+
+            // Act
+            _form.button1_Click(null, EventArgs.Empty);
+            _form.Show();
+
+            // Assert
+            Assert.IsFalse(_form.onLoad, "onLoad should be false after button click");
+            _form.Close();
+        }
+        [TestMethod]
+        public void TrackPlayer1Move_HandlesMovesCorrectly()
+        {
+            // Arrange
+            var form = new Form1();
+            form.player1Moves = new List<int>(); // Ініціалізуємо список
+
+            // Act & Assert: додаємо перші 5 ходів
+            form.TrackPlayer1Move(1);
+            form.TrackPlayer1Move(2);
+            form.TrackPlayer1Move(3);
+            form.TrackPlayer1Move(4);
+            form.TrackPlayer1Move(5);
+
+            // Перевіряємо, що всі 5 елементів є в списку
+            Assert.AreEqual(5, form.player1Moves.Count, "The list should contain exactly 5 moves.");
+            CollectionAssert.AreEqual(new List<int> { 1, 2, 3, 4, 5 }, form.player1Moves, "The moves in the list should match the added moves.");
+
+            // Act: додаємо ще один хід (6)
+            form.TrackPlayer1Move(6);
+
+            // Assert: перевіряємо, що перший елемент видалено, а новий додано
+            Assert.AreEqual(5, form.player1Moves.Count, "The list should still contain 5 moves after adding a sixth move.");
+            CollectionAssert.AreEqual(new List<int> { 2, 3, 4, 5, 6 }, form.player1Moves, "The list should maintain the most recent 5 moves.");
+
+            // Act: додаємо ще один хід (7)
+            form.TrackPlayer1Move(7);
+
+            // Assert: перевіряємо актуальний стан списку
+            Assert.AreEqual(5, form.player1Moves.Count, "The list should still contain 5 moves after adding another move.");
+            CollectionAssert.AreEqual(new List<int> { 3, 4, 5, 6, 7 }, form.player1Moves, "The list should maintain the most recent 5 moves.");
+        }
     }
 }
 
