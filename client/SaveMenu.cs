@@ -15,8 +15,11 @@ namespace game_client
     /// 3. A save button that writes the game data to a configuration file.
     public partial class SaveMenu : Form
     {
-        private string gameMode;
-        private string gameScore;
+        public string gameMode;
+        public string gameScore;
+        // Додаємо публічні властивості для доступу до значень
+        public string GameMode => gameMode;
+        public string GameScore => gameScore;
         /// <summary>
         /// Initializes a new instance of the <c>SaveMenu</c> class.
         /// </summary>
@@ -50,6 +53,7 @@ namespace game_client
         /// @endcode
         public SaveMenu(string mode, string score)
         {
+            
             InitializeComponent();
             textBox2.ReadOnly = true;
             textBox3.ReadOnly = true;
@@ -57,6 +61,7 @@ namespace game_client
             this.MaximizeBox = false; // Вимкнути кнопку максимізації
             this.gameMode = mode;
             this.gameScore = score;
+
             textBox2.Text = gameMode;
             textBox3.Text = gameScore;
             panel1.Paint += new PaintEventHandler(DrawCustomBorder);
@@ -148,11 +153,14 @@ namespace game_client
                 ini.Write("GameData", $"{gameKey}_TextBox2", textBox2.Text);
                 ini.Write("GameData", $"{gameKey}_TextBox3", textBox3.Text);
 
-                MessageBox.Show("Дані успішно збережені у config.ini!");
+                
+                    Console.WriteLine($"Дані успішно збережені у config.ini!"); // або інше повідомлення для тестів MessageBox.Show("Дані успішно збережені у config.ini!");
+                
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error saving data: {ex.Message}\nError type: {ex.GetType().Name}\n{ex.StackTrace}");
+                throw;
             }
         }
     }
