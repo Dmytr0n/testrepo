@@ -1,4 +1,4 @@
-name: Build and Test C# App with OpenCover and ReportGenerator
+name: Build C# GUI App
 
 on:
   push:
@@ -9,44 +9,40 @@ on:
       - '*'
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  client-test:
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Set up .NET Framework 4.7.2
+      uses: microsoft/setup-msbuild@v1
       with:
-        dotnet-version: '7.0.x'
+        vs-version: '16.0'
+        vs-installation-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools'
 
-    - name: Restore Dependencies
-      run: dotnet restore client/gameclient.sln
+    - name: Restore NuGet packages
+      run: nuget restore client/gameclient.sln
 
-    - name: Build Project
-      run: dotnet build client/gameclient.sln --configuration Debug
-
-    - name: Run Tests with Coverage using Coverlet
+    - name: Build project for testing
+      run: msbuild client/gameclient.sln /p:Configuration=Debug
+    
+    
+    - name: Copy folder
       run: |
-        dotnet tool install --global coverlet.console
-        coverlet client/UnitTestProject1/bin/Debug/net7.0/UnitTestProject1.dll \
-          --target "dotnet" \
-          --targetargs "test client/UnitTestProject1/UnitTestProject1.csproj" \
-          --format opencover \
-          --output TestResults/coverage.opencover.xml
-
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-    - name: Generate HTML Report
-      run: reportgenerator -reports:TestResults/coverage.opencover.xml -targetdir:TestResults/CoverageReport -reporttypes:Html
-
-    - name: Upload Coverage Report
+            cmd.exe /c xcopy /E /I .\media\img .\client\UnitTestProject1\bin\Debug\img  
+            
+    - name: Run tests and save results as .trx
+      run: |
+        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --logger "trx;LogFileName=test_results.trx"
+    
+    - name: Run Tests with Coverage
+      run: |
+        dotnet test "client\UnitTestProject1\bin\Debug\UnitTestProject1.dll" --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/coverage/
+    
+    - name: Upload test results as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: coverage-report
-        path: TestResults/CoverageReport/index.html
-
-    
-   
+        name: test-results
+        path: ./TestResults
