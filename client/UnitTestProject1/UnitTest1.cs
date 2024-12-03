@@ -1255,6 +1255,28 @@ Game_2_TextBox3=2:3
             Assert.AreEqual(5, form.player1Moves.Count, "The list should still contain 5 moves after adding another move.");
             CollectionAssert.AreEqual(new List<int> { 3, 4, 5, 6, 7 }, form.player1Moves, "The list should maintain the most recent 5 moves.");
         }
+        [TestMethod]
+        public void Main_ShouldRunApplicationAndInitializeForm1()
+        {
+            // Arrange
+            var applicationThread = new Task(() =>
+            {
+                // Act
+                Program.Main();
+            });
+
+            applicationThread.Start();
+
+            // Чекаємо кілька секунд, поки програма не ініціалізується
+            Task.Delay(2000).Wait();
+
+            // Assert: перевіряємо, чи форма була ініціалізована
+            Assert.IsNotNull(Application.OpenForms["Form1"], "Form1 should be initialized and run.");
+
+            // Закриваємо форму
+            Application.Exit();
+            applicationThread.Wait();  // чекаємо завершення потоку
+        }
     }
 }
 
