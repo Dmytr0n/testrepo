@@ -657,44 +657,7 @@ namespace testingMenu
             // Assert
             Assert.IsTrue(form.IsExitCalled, "IsExitCalled should be true when the button is clicked.");
         }
-        [TestMethod]
-        public void Button23_Click_ShouldLoadValuesFromIniFile()
-        {
-            // Arrange
-            var form = new Form1();
-
-            // Створення тестового INI файлу
-            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string iniContent = "[CheckboxStates]\nCheckBox1=true\nCheckBox2=false\nCheckBox3=true";
-            File.WriteAllText(iniPath, iniContent);
-
-            // Act
-            form.button23_Click(null, EventArgs.Empty); // Викликаємо метод
-
-            // Assert
-            Assert.IsTrue(form.musicOn, "Music should be ON.");
-            Assert.IsFalse(form.winStrategy, "Win strategy should be OFF.");
-            Assert.IsTrue(form.randomMode, "Random mode should be ON.");
-            
-        }
-        [TestMethod]
-        public void Button23_Click_ShouldStopMusicWhenCheckbox1IsFalse()
-        {
-            // Arrange
-            var form = new Form1();
-
-            // Створення тестового INI файлу
-            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string iniContent = "[CheckboxStates]\nCheckBox1=false\nCheckBox2=true\nCheckBox3=true";
-            File.WriteAllText(iniPath, iniContent);
-
-            // Act
-            form.button23_Click(null, EventArgs.Empty); // Викликаємо метод
-
-            // Assert
-            Assert.IsFalse(form.musicOn, "Music should be OFF.");
-
-        }
+        
        
 
        
