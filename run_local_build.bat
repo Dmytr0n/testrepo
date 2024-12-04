@@ -369,7 +369,7 @@ set ReportOutput=.\deploy\test_coverage\coverage-report
 
 
 REM Run tests with OpenCover for code coverage
-"%OpenCoverPath%\OpenCover.Console.exe" -register:user -target:%TestRunnerPath% -targetargs:"%TestAssembly%" -output:%CoverageOutput% -filter:"+[*]* -[game_client.Properties.Resources]*" -hideskipped:All
+"%OpenCoverPath%\OpenCover.Console.exe" -register:user -target:%TestRunnerPath% -targetargs:"%TestAssembly%" -output:%CoverageOutput% -filter:"+[*UnitTestProject1.dll]*" -hideskipped:All
 
 REM Generate HTML report from coverage
 "%ReportGeneratorPath%\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
