@@ -24,12 +24,7 @@ jobs:
           version: 0.33.1
 
       - name: doxygen-install
-        uses: ssciwr/doxygen-install@v1.6.0
-
-      - name: Install OpenCover
-        run: |
-              curl -L -o OpenCover.zip https://github.com/OpenCover/opencover/releases/download/4.7.922/OpenCover.4.7.922.zip
-              tar -xf OpenCover.zip -C %RUNNER_TEMP%    
+        uses: ssciwr/doxygen-install@v1.6.0   
       
       - name: Run CMD script
         shell: cmd
