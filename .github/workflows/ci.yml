@@ -34,16 +34,6 @@ jobs:
               curl -L -o OpenCover.zip https://github.com/OpenCover/opencover/releases/download/4.7.922/OpenCover.4.7.922.zip
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
-      
-      - name: Download ReportGenerator
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/danielpalme/ReportGenerator/releases/download/v5.1.23/ReportGenerator.zip" -OutFile "ReportGenerator.zip"
-      - name: Extract ReportGenerator
-        run: |
-          Expand-Archive -Path "ReportGenerator.zip" -DestinationPath "ReportGenerator"
-      - name: Verify installation
-        run: |
-          Get-ChildItem -Path "ReportGenerator"
      
       - name: Run CMD script
         shell: cmd
