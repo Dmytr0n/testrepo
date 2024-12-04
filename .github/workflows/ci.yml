@@ -20,9 +20,6 @@ jobs:
 
       - name: Setup VSTest.console.exe
         uses: darenm/Setup-VSTest@v1.3
-
-      - name: OpenCover Badge Generator
-        uses: danpetitt/open-cover-badge-generator-action@v1.0.10
             
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v1
