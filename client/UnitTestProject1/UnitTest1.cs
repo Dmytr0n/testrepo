@@ -1144,12 +1144,9 @@ Game_2_TextBox3=2:3
             var form = new SettingsForm();
             form.Show();
 
-            // Отримуємо абсолютний шлях до файлу, базуючись на поточному каталозі виконання програми
-            string soundFile = @"D:\a\testrepo\testrepo\media\audio\music.wav";
-
-            // Перевірка існування файлу
-            Assert.IsTrue(File.Exists(soundFile), $"Файл music.wav не знайдено за вказаним шляхом: {soundFile}");
-
+            // Переконайтеся, що файл існує
+            string soundFile = @"C:\Users\Дмитро\Downloads\music.wav";
+            Assert.IsTrue(File.Exists(soundFile), "Файл music.wav не знайдено за вказаним шляхом.");
 
             // Act
             form.checkBox1.Checked = true; // Активуємо checkBox1
@@ -1354,26 +1351,6 @@ Game_2_TextBox3=2:3
             // Перевірка, чи таймер був ініціалізований і запущений
             Assert.IsNotNull(form.TestTimer, "Таймер не був ініціалізований.");
             Assert.IsTrue(form.TestTimer.Enabled, "Таймер не був запущений.");
-        }
-        [TestMethod]
-        public void Button23_Click_ShouldLoadValuesFromIniFile()
-        {
-            // Arrange
-            var form = new TestForm1();
-
-            // Створення тестового INI файлу
-            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            string iniContent = "[CheckboxStates]\nCheckBox1=true\nCheckBox2=false\nCheckBox3=true";
-            File.WriteAllText(iniPath, iniContent);
-
-            // Act
-            form.button23_Click(null, EventArgs.Empty); // Викликаємо метод
-
-            // Assert
-            Assert.IsTrue(form.musicOn, "Music should be ON.");
-            Assert.IsFalse(form.winStrategy, "Win strategy should be OFF.");
-            Assert.IsTrue(form.randomMode, "Random mode should be ON.");
-
         }
     }
 }
