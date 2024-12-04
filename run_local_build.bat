@@ -369,7 +369,7 @@ set ReportOutput=.\deploy\test_coverage\coverage-report
 
 
 REM Run tests with OpenCover for code coverage
-"%RUNNER_TEMP%\OpenCover.Console.exe" -register:user -target:%TestRunnerPath% -targetargs:"%TestAssembly%" -output:%CoverageOutput% -filter:"+[*]* -[Microsoft.TestPlatform.ObjectModel*]*"
+dotnet test deploy\client\UnitTestProject1.dll --collect:"XPlat Code Coverage" --results-directory ./deploy\test_coverage
 
 REM Generate HTML report from coverage
 "%ReportGeneratorPath%\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
