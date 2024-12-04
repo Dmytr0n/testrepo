@@ -25,11 +25,17 @@ jobs:
 
       - name: doxygen-install
         uses: ssciwr/doxygen-install@v1.6.0
-            
+
+      - name: Install OpenCover
+        run: |
+              curl -L -o OpenCover.zip https://github.com/OpenCover/opencover/releases/download/4.7.922/OpenCover.4.7.922.zip
+              tar -xf OpenCover.zip -C %RUNNER_TEMP%    
+      
       - name: Run CMD script
         shell: cmd
         run: |
           .\run_local_build.bat COM5 9600
+     
       - name: Upload script results as artifact
         uses: actions/upload-artifact@v3
         with:
