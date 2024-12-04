@@ -374,7 +374,7 @@ REM Run tests with OpenCover for code coverage
 
 
 REM Generate HTML report from coverage
-"ReportGenerator\net47\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
+"ReportGenerator\net9.0\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
 
 REM Check if the coverage report generation was successful
 if %errorlevel% neq 0 (
