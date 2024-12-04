@@ -373,8 +373,7 @@ REM Run tests with OpenCover for code coverage
 "OpenCover\OpenCover.Console.exe" -register -target:%TestRunnerPath% -targetargs:"%TestAssembly%" -output:%CoverageOutput% -filter:"+[*]* -[game_client.Properties.Resources]*"
 
 
-REM Generate HTML report from coverage
-"ReportGenerator\net9.0\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
+
 
 REM Check if the coverage report generation was successful
 if %errorlevel% neq 0 (
