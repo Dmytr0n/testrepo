@@ -37,14 +37,13 @@ jobs:
 
       - name: Download ReportGenerator from Google Drive
         run: |
-          # Замість FILE_ID вставте ID вашого файлу
           $url = "https://drive.google.com/uc?export=download&id=1Muxd-qcBcHdlXdgDb_OcdUaNBGOZ3sAU"
-          $output = "ReportGenerator.zip"
+          $output = "ReportGenerator_5.4.1.zip"
           Invoke-WebRequest -Uri $url -OutFile $output
 
       - name: Extract ReportGenerator
         run: |
-          Expand-Archive -Path ReportGenerator.zip -DestinationPath ReportGenerator
+          Expand-Archive -Path ReportGenerator_5.4.1.zip -DestinationPath ReportGenerator
      
       - name: Run CMD script
         shell: cmd
