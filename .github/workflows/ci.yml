@@ -35,11 +35,10 @@ jobs:
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
       
-      - name: Download ReportGenerator
+      - name: Install ReportGenerator using Chocolatey
         run: |
-                curl -L -o ReportGenerator.zip https://github.com/danielpalme/ReportGenerator/releases/download/v5.1.24/ReportGenerator.Core_5.1.24.zip
-                mkdir ReportGenerator
-                powershell -Command "Expand-Archive -Path ReportGenerator.zip -DestinationPath ReportGenerator"
+              choco install reportgenerator -y
+
     
       - name: Upload script results as artifact
         uses: actions/upload-artifact@v3
