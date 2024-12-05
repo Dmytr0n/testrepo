@@ -35,11 +35,13 @@ jobs:
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
 
-      - name: Download ReportGenerator
+      - name: Download ReportGenerator from GitHub releases
         run: |
-          $url = "https://github.com/danielpalme/ReportGenerator/releases/download/v5.0.0/ReportGenerator.5.0.0.zip"
-          $output = "ReportGenerator.zip"
-          Invoke-WebRequest -Uri $url -OutFile $output
+          $url = "https://github.com/danielpalme/ReportGenerator/releases/latest"  # Останній реліз
+          $response = Invoke-RestMethod -Uri $url
+          # Витягнути правильне посилання з API відповіді
+          $downloadUrl = $response.assets | Where-Object { $_.name -like "*.zip" } | Select-Object -ExpandProperty browser_download_url
+          Invoke-WebRequest -Uri $downloadUrl -OutFile "ReportGenerator.zip"
 
       - name: Extract ReportGenerator
         run: |
