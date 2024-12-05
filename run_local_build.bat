@@ -361,7 +361,7 @@ REM Step 11: Run Unit Test Coverage
 echo Step 11: Running Unit Test Coverage...
 REM Define relative paths for coverage tools
 set OpenCoverPath=.\Tools\OpenCover
-set ReportGeneratorPath=.\Tools\ReportGenerator\net47
+set ReportGeneratorPath=.\ReportGenerator\net47
 set TestRunnerPath="vstest.console.exe"
 set TestAssembly=.\deploy\client\UnitTestProject1.dll
 set CoverageOutput=.\deploy\test_coverage\coverage.xml
@@ -371,6 +371,8 @@ set ReportOutput=.\deploy\test_coverage\coverage-report
 REM Run tests with OpenCover for code coverage
 "OpenCover\OpenCover.Console.exe" -register -target:%TestRunnerPath% -targetargs:"%TestAssembly%" -output:%CoverageOutput% -filter:"+[*]* -[game_client.Properties.Resources]*"
 
+REM Generate HTML report from coverage
+"%ReportGeneratorPath%\ReportGenerator.exe" -reports:%CoverageOutput% -targetdir:%ReportOutput% -reporttypes:Html
 
 REM Check if the coverage report generation was successful
 if %errorlevel% neq 0 (
