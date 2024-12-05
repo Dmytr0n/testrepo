@@ -34,47 +34,18 @@ jobs:
               curl -L -o OpenCover.zip https://github.com/OpenCover/opencover/releases/download/4.7.922/OpenCover.4.7.922.zip
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
-      
+
+      - name: Download ReportGenerator
+        run: |
+          $url = "https://github.com/danielpalme/ReportGenerator/releases/download/v5.0.0/ReportGenerator.5.0.0.zip"
+          $output = "ReportGenerator.zip"
+          Invoke-WebRequest -Uri $url -OutFile $output
+
+      - name: Extract ReportGenerator
+        run: |
+          Expand-Archive -Path ReportGenerator.zip -DestinationPath ReportGenerator
+     
       - name: Run CMD script
         shell: cmd
         run: |
           .\run_local_build.bat COM5 9600
-      
-      - name: DotCover Github Actions wrapper
-        uses: dodopizza/dotcover-action@v1.2
-            
-
-      # 3. Виконання тестів із покриттям
-      - name: Run Tests with dotCover
-        run: |
-          dotCover\dotCover.exe cover `
-            /TargetExecutable="vstest.console.exe" `
-            /TargetArguments="deploy\client\UnitTestProject1.dll" `
-            /Output=".\deploy\test_coverage\coverage.dcvr"
-
-      # 4. Генерація звіту
-      - name: Generate Coverage Report
-        run: |
-          dotCover\dotCover.exe report `
-            /Source=".\deploy\test_coverage\coverage.dcvr" `
-            /Output=".\deploy\test_coverage\coverage.html" `
-            /ReportType="HTML"
-
-    
-      - name: Upload script results as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: script-results
-          path: ./artefacts
-          
-      - name: Upload Doxygen documentation as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: doxygen-documentation
-          path: ./deploy/documentation/
-
-      - name: Upload Coverage as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-artifacts
-          path: ./deploy/test_coverage/
