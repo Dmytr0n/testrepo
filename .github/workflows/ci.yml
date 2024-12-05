@@ -49,3 +49,21 @@ jobs:
         shell: cmd
         run: |
           .\run_local_build.bat COM5 9600
+
+      - name: Upload script results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: script-results
+          path: ./artefacts
+          
+      - name: Upload Doxygen documentation as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: doxygen-documentation
+          path: ./deploy/documentation/
+
+      - name: Upload Coverage as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-artifacts
+          path: ./deploy/test_coverage/
