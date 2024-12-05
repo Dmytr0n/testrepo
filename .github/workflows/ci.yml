@@ -40,11 +40,9 @@ jobs:
         run: |
           .\run_local_build.bat COM5 9600
       
-      - name: Download dotCover CLI
-        run: |
-          curl -L -o dotCover.zip https://download.jetbrains.com/resharper/dotUltimate/dotCoverCLT.2023.2.2.zip
-          mkdir dotCover
-          powershell -Command "Expand-Archive -Path dotCover.zip -DestinationPath dotCover"
+      - name: DotCover Github Actions wrapper
+        uses: dodopizza/dotcover-action@v1.2
+            
 
       # 3. Виконання тестів із покриттям
       - name: Run Tests with dotCover
