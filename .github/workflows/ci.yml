@@ -35,13 +35,12 @@ jobs:
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
 
-      - name: Download ReportGenerator from GitHub releases
+      - name: Download ReportGenerator from Google Drive
         run: |
-          $url = "https://github.com/danielpalme/ReportGenerator/releases/latest"  # Останній реліз
-          $response = Invoke-RestMethod -Uri $url
-          # Витягнути правильне посилання з API відповіді
-          $downloadUrl = $response.assets | Where-Object { $_.name -like "*.zip" } | Select-Object -ExpandProperty browser_download_url
-          Invoke-WebRequest -Uri $downloadUrl -OutFile "ReportGenerator.zip"
+          # Замість FILE_ID вставте ID вашого файлу
+          $url = "https://drive.google.com/uc?export=download&id=1Muxd-qcBcHdlXdgDb_OcdUaNBGOZ3sAU"
+          $output = "ReportGenerator.zip"
+          Invoke-WebRequest -Uri $url -OutFile $output
 
       - name: Extract ReportGenerator
         run: |
