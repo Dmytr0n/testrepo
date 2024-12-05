@@ -35,9 +35,32 @@ jobs:
               mkdir OpenCover
               powershell -Command "Expand-Archive -Path OpenCover.zip -DestinationPath OpenCover"
       
-      - name: Install ReportGenerator using Chocolatey
+      - name: Run CMD script
+        shell: cmd
         run: |
-              choco install reportgenerator -y
+          .\run_local_build.bat COM5 9600
+      
+      - name: Download dotCover CLI
+        run: |
+          curl -L -o dotCover.zip https://download.jetbrains.com/resharper/dotUltimate/dotCoverCLT.2023.2.2.zip
+          mkdir dotCover
+          powershell -Command "Expand-Archive -Path dotCover.zip -DestinationPath dotCover"
+
+      # 3. Виконання тестів із покриттям
+      - name: Run Tests with dotCover
+        run: |
+          dotCover\dotCover.exe cover `
+            /TargetExecutable="vstest.console.exe" `
+            /TargetArguments="deploy\client\UnitTestProject1.dll" `
+            /Output=".\deploy\test_coverage\coverage.dcvr"
+
+      # 4. Генерація звіту
+      - name: Generate Coverage Report
+        run: |
+          dotCover\dotCover.exe report `
+            /Source=".\deploy\test_coverage\coverage.dcvr" `
+            /Output=".\deploy\test_coverage\coverage.html" `
+            /ReportType="HTML"
 
     
       - name: Upload script results as artifact
